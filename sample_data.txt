@@ -1,0 +1,346 @@
+XenForo_Visitor Object
+(
+    [_user:protected] => Array
+        (
+            [user_id] => 1
+            [username] => Kehvarl
+            [email] => Kehvarl@gmail.com
+            [gender] => male
+            [custom_title] => 
+            [language_id] => 1
+            [style_id] => 0
+            [timezone] => America/Phoenix
+            [visible] => 0
+            [activity_visible] => 0
+            [user_group_id] => 2
+            [secondary_group_ids] => 3,4
+            [display_style_group_id] => 3
+            [permission_combination_id] => 5
+            [message_count] => 0
+            [conversations_unread] => 0
+            [register_date] => 1479275473
+            [last_activity] => 1485644996
+            [trophy_points] => 0
+            [alerts_unread] => 0
+            [avatar_date] => 0
+            [avatar_width] => 0
+            [avatar_height] => 0
+            [gravatar] => 
+            [user_state] => valid
+            [is_moderator] => 1
+            [is_admin] => 1
+            [is_banned] => 0
+            [like_count] => 0
+            [warning_points] => 0
+            [is_staff] => 1
+            [dob_day] => 2
+            [dob_month] => 12
+            [dob_year] => 1981
+            [status] => 
+            [status_date] => 0
+            [status_profile_post_id] => 0
+            [signature] => 
+            [homepage] => 
+            [location] => 
+            [occupation] => 
+            [following] => 
+            [ignored] => 
+            [csrf_token] => N9zSNSqm0ANlaEglWPDrYbTB4mIGfCenp4J1OWGo
+            [avatar_crop_x] => 0
+            [avatar_crop_y] => 0
+            [about] => 
+            [custom_fields] => a:6:{s:3:"aim";s:0:"";s:3:"icq";s:0:"";s:5:"yahoo";s:0:"";s:5:"skype";s:0:"";s:8:"facebook";s:0:"";s:7:"twitter";s:0:"";}
+            [external_auth] => 
+            [password_date] => 1479275473
+            [show_dob_year] => 0
+            [show_dob_date] => 0
+            [content_show_signature] => 1
+            [receive_admin_email] => 0
+            [email_on_conversation] => 0
+            [is_discouraged] => 0
+            [default_watch_state] => 
+            [alert_optout] => 
+            [enable_rte] => 1
+            [enable_flash_uploader] => 0
+            [use_tfa] => 0
+            [allow_view_profile] => none
+            [allow_post_profile] => none
+            [allow_send_personal_conversation] => none
+            [allow_view_identities] => none
+            [allow_receive_news_feed] => none
+            [global_permission_cache] => a:6:{s:6:"avatar";a:2:{s:7:"allowed";b:1;s:11:"maxFileSize";i:-1;}s:7:"general";a:23:{s:13:"editSignature";b:1;s:4:"view";b:1;s:8:"viewNode";b:1;s:7:"viewIps";b:1;s:14:"viewMemberList";b:1;s:17:"bypassUserPrivacy";b:1;s:11:"viewProfile";b:1;s:6:"search";b:1;s:9:"cleanSpam";b:1;s:14:"maxTaggedUsers";i:5;s:9:"createTag";b:1;s:18:"bypassUserTagLimit";b:0;s:11:"viewWarning";b:1;s:4:"warn";b:1;s:13:"manageWarning";b:1;s:16:"editBasicProfile";b:1;s:11:"editProfile";b:1;s:15:"editCustomTitle";b:1;s:10:"requireTfa";b:0;s:21:"followModerationRules";b:1;s:16:"bypassFloodCheck";b:1;s:15:"bypassSpamCheck";b:0;s:6:"report";b:1;}s:5:"forum";a:31:{s:10:"viewOthers";b:1;s:11:"viewContent";b:1;s:4:"like";b:1;s:10:"postThread";b:1;s:18:"stickUnstickThread";b:1;s:9:"postReply";b:1;s:11:"editOwnPost";b:1;s:16:"lockUnlockThread";b:1;s:13:"deleteOwnPost";b:1;s:20:"editOwnPostTimeLimit";i:-1;s:18:"editOwnThreadTitle";b:1;s:15:"deleteOwnThread";b:1;s:15:"manageAnyThread";b:1;s:14:"viewAttachment";b:1;s:16:"uploadAttachment";b:1;s:12:"tagOwnThread";b:1;s:12:"tagAnyThread";b:0;s:25:"manageOthersTagsOwnThread";b:1;s:15:"deleteAnyThread";b:1;s:19:"hardDeleteAnyThread";b:1;s:14:"threadReplyBan";b:1;s:8:"votePoll";b:1;s:11:"editAnyPost";b:1;s:13:"deleteAnyPost";b:1;s:17:"hardDeleteAnyPost";b:1;s:4:"warn";b:1;s:12:"manageAnyTag";b:1;s:11:"viewDeleted";b:1;s:13:"viewModerated";b:1;s:8:"undelete";b:1;s:16:"approveUnapprove";b:1;}s:9:"signature";a:14:{s:9:"basicText";b:1;s:12:"extendedText";b:1;s:5:"align";b:1;s:4:"list";b:1;s:5:"image";b:1;s:4:"link";b:1;s:5:"media";b:1;s:5:"block";b:1;s:12:"maxPrintable";i:-1;s:8:"maxLines";i:-1;s:8:"maxLinks";i:-1;s:9:"maxImages";i:-1;s:10:"maxSmilies";i:-1;s:11:"maxTextSize";i:-1;}s:11:"profilePost";a:15:{s:7:"editAny";b:1;s:4:"view";b:1;s:4:"like";b:1;s:9:"deleteAny";b:1;s:9:"manageOwn";b:1;s:13:"hardDeleteAny";b:1;s:4:"post";b:1;s:4:"warn";b:1;s:7:"comment";b:1;s:9:"deleteOwn";b:1;s:7:"editOwn";b:1;s:11:"viewDeleted";b:1;s:13:"viewModerated";b:1;s:8:"undelete";b:1;s:16:"approveUnapprove";b:1;}s:12:"conversation";a:8:{s:11:"editAnyPost";b:1;s:5:"start";b:1;s:7:"receive";b:1;s:12:"alwaysInvite";b:1;s:16:"uploadAttachment";b:1;s:11:"editOwnPost";b:1;s:20:"editOwnPostTimeLimit";i:5;s:13:"maxRecipients";i:-1;}}
+            [csrf_token_page] => 1,1485645274,b4cfc520d045c58023a36335b10856a2e46ba73f
+            [customFields] => Array
+                (
+                    [aim] => 
+                    [icq] => 
+                    [yahoo] => 
+                    [skype] => 
+                    [facebook] => 
+                    [twitter] => 
+                )
+
+            [externalAuth] => Array
+                (
+                )
+
+            [isTrusted] => 1
+            [referer] => 
+            [from_search] => 
+            [ignoredUsers] => Array
+                (
+                )
+
+            [permissions] => Array
+                (
+                    [avatar] => Array
+                        (
+                            [allowed] => 1
+                            [maxFileSize] => -1
+                        )
+
+                    [general] => Array
+                        (
+                            [editSignature] => 1
+                            [view] => 1
+                            [viewNode] => 1
+                            [viewIps] => 1
+                            [viewMemberList] => 1
+                            [bypassUserPrivacy] => 1
+                            [viewProfile] => 1
+                            [search] => 1
+                            [cleanSpam] => 1
+                            [maxTaggedUsers] => 5
+                            [createTag] => 1
+                            [bypassUserTagLimit] => 
+                            [viewWarning] => 1
+                            [warn] => 1
+                            [manageWarning] => 1
+                            [editBasicProfile] => 1
+                            [editProfile] => 1
+                            [editCustomTitle] => 1
+                            [requireTfa] => 
+                            [followModerationRules] => 1
+                            [bypassFloodCheck] => 1
+                            [bypassSpamCheck] => 
+                            [report] => 1
+                        )
+
+                    [forum] => Array
+                        (
+                            [viewOthers] => 1
+                            [viewContent] => 1
+                            [like] => 1
+                            [postThread] => 1
+                            [stickUnstickThread] => 1
+                            [postReply] => 1
+                            [editOwnPost] => 1
+                            [lockUnlockThread] => 1
+                            [deleteOwnPost] => 1
+                            [editOwnPostTimeLimit] => -1
+                            [editOwnThreadTitle] => 1
+                            [deleteOwnThread] => 1
+                            [manageAnyThread] => 1
+                            [viewAttachment] => 1
+                            [uploadAttachment] => 1
+                            [tagOwnThread] => 1
+                            [tagAnyThread] => 
+                            [manageOthersTagsOwnThread] => 1
+                            [deleteAnyThread] => 1
+                            [hardDeleteAnyThread] => 1
+                            [threadReplyBan] => 1
+                            [votePoll] => 1
+                            [editAnyPost] => 1
+                            [deleteAnyPost] => 1
+                            [hardDeleteAnyPost] => 1
+                            [warn] => 1
+                            [manageAnyTag] => 1
+                            [viewDeleted] => 1
+                            [viewModerated] => 1
+                            [undelete] => 1
+                            [approveUnapprove] => 1
+                        )
+
+                    [signature] => Array
+                        (
+                            [basicText] => 1
+                            [extendedText] => 1
+                            [align] => 1
+                            [list] => 1
+                            [image] => 1
+                            [link] => 1
+                            [media] => 1
+                            [block] => 1
+                            [maxPrintable] => -1
+                            [maxLines] => -1
+                            [maxLinks] => -1
+                            [maxImages] => -1
+                            [maxSmilies] => -1
+                            [maxTextSize] => -1
+                        )
+
+                    [profilePost] => Array
+                        (
+                            [editAny] => 1
+                            [view] => 1
+                            [like] => 1
+                            [deleteAny] => 1
+                            [manageOwn] => 1
+                            [hardDeleteAny] => 1
+                            [post] => 1
+                            [warn] => 1
+                            [comment] => 1
+                            [deleteOwn] => 1
+                            [editOwn] => 1
+                            [viewDeleted] => 1
+                            [viewModerated] => 1
+                            [undelete] => 1
+                            [approveUnapprove] => 1
+                        )
+
+                    [conversation] => Array
+                        (
+                            [editAnyPost] => 1
+                            [start] => 1
+                            [receive] => 1
+                            [alwaysInvite] => 1
+                            [uploadAttachment] => 1
+                            [editOwnPost] => 1
+                            [editOwnPostTimeLimit] => 5
+                            [maxRecipients] => -1
+                        )
+
+                )
+
+        )
+
+    [_language:protected] => Array
+        (
+            [language_id] => 1
+            [parent_id] => 0
+            [parent_list] => 1,0
+            [title] => English (US)
+            [date_format] => M j, Y
+            [time_format] => g:i A
+            [decimal_point] => .
+            [thousands_separator] => ,
+            [phrase_cache] => Array
+                (
+                    [a_moment_ago] => A moment ago
+                    [continue_reading] => Continue reading...
+                    [conversations] => Conversations
+                    [date_x_at_time_y] => {date} at {time}
+                    [day_friday] => Friday
+                    [day_friday_short] => Fri
+                    [day_monday] => Monday
+                    [day_monday_short] => Mon
+                    [day_saturday] => Saturday
+                    [day_saturday_short] => Sat
+                    [day_sunday] => Sunday
+                    [day_sunday_short] => Sun
+                    [day_thursday] => Thursday
+                    [day_thursday_short] => Thu
+                    [day_tuesday] => Tuesday
+                    [day_tuesday_short] => Tue
+                    [day_wednesday] => Wednesday
+                    [day_wednesday_short] => Wed
+                    [day_x_at_time_y] => {day} at {time}
+                    [delete] => Delete
+                    [female] => Female
+                    [follow] => Follow
+                    [forums] => Forums
+                    [from_x_location] => <span class="muted">from</span> {location}
+                    [guest] => Guest
+                    [help] => Help
+                    [likes_1_person_likes_this] => 1 person likes this.
+                    [likes_user1_and_user2_like_this] => {user1} and {user2} like this.
+                    [likes_user1_likes_this] => {user1} likes this.
+                    [likes_user1_user2_and_user3_like_this] => {user1}, {user2} and {user3} like this.
+                    [likes_user1_user2_user3_and_1_other_like_this] => {user1}, {user2}, {user3} and <a href="{likesLink}" class="OverlayTrigger">1 other person</a> like this.
+                    [likes_user1_user2_user3_and_x_others_like_this] => {user1}, {user2}, {user3} and <a href="{likesLink}" class="OverlayTrigger">{others} others</a> like this.
+                    [likes_x_people_like_this] => {likes} people like this.
+                    [likes_you_and_user1_like_this] => You and {user1} like this.
+                    [likes_you_like_this] => You like this.
+                    [likes_you_user1_and_user2_like_this] => You, {user1} and {user2} like this.
+                    [likes_you_user1_user2_and_1_other_like_this] => You, {user1}, {user2} and <a href="{likesLink}" class="OverlayTrigger">1 other person</a> like this.
+                    [likes_you_user1_user2_and_x_others_like_this] => You, {user1}, {user2} and <a href="{likesLink}" class="OverlayTrigger">{others} others</a> like this.
+                    [male] => Male
+                    [master_language] => Master Language
+                    [master_style] => Master Style
+                    [members] => Members
+                    [month_1] => January
+                    [month_10] => October
+                    [month_10_short] => Oct
+                    [month_11] => November
+                    [month_11_short] => Nov
+                    [month_12] => December
+                    [month_12_short] => Dec
+                    [month_1_short] => Jan
+                    [month_2] => February
+                    [month_2_short] => Feb
+                    [month_3] => March
+                    [month_3_short] => Mar
+                    [month_4] => April
+                    [month_4_short] => Apr
+                    [month_5] => May
+                    [month_5_short] => May
+                    [month_6] => June
+                    [month_6_short] => Jun
+                    [month_7] => July
+                    [month_7_short] => Jul
+                    [month_8] => August
+                    [month_8_short] => Aug
+                    [month_9] => September
+                    [month_9_short] => Sep
+                    [new_posts] => New Posts
+                    [new_profile_posts] => New Profile Posts
+                    [notice_board_closed] => Board Closed
+                    [notice_confirm_email] => Confirm Email
+                    [notice_cookies] => Cookies
+                    [notice_email_bounce] => Email Invalid
+                    [notice_upgrade_pending] => Upgrade Pending
+                    [one_minute_ago] => 1 minute ago
+                    [page_x] =>  | Page {page}
+                    [spoiler] => Spoiler
+                    [staff_member] => Staff Member
+                    [style_property_messageShowCustomFields_description_master] => Show any custom fields that are set to display in message user info. This setting is individually controlled by each custom field
+                    [style_property_messageShowCustomFields_master] => Show custom user fields
+                    [time_am_lower] => am
+                    [time_am_upper] => AM
+                    [time_pm_lower] => pm
+                    [time_pm_upper] => PM
+                    [today] => Today
+                    [today_at_x] => Today at {time}
+                    [unfollow] => Unfollow
+                    [ungrouped] => Ungrouped
+                    [unspecified] => unspecified
+                    [user_field_aim] => AIM
+                    [user_field_facebook] => Facebook
+                    [user_field_icq] => ICQ
+                    [user_field_skype] => Skype
+                    [user_field_twitter] => Twitter
+                    [user_field_yahoo] => Yahoo! Messenger
+                    [user_is_following_you] => {user} is following you
+                    [user_is_not_following_you] => {user} is not following you
+                    [x_bytes] => {size} bytes
+                    [x_gb] => {size} GB
+                    [x_kb] => {size} KB
+                    [x_mb] => {size} MB
+                    [x_minutes_ago] => {minutes} minutes ago
+                    [x_tb] => {size} TB
+                    [yesterday] => Yesterday
+                    [yesterday_at_x] => Yesterday at {time}
+                    [your_account] => Your Account
+                )
+
+            [language_code] => en-US
+            [text_direction] => LTR
+        )
+
+    [_nodePermissions:protected] => Array
+        (
+        )
+
+    [_adminPermissions:protected] => 
+    [_isSuperAdmin:protected] => 
+)

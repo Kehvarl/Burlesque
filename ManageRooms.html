@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Burlesque Room Manager</title>
+    <script src="js/Burlesque_Common_UI.js" type="text/javascript"></script>
+    <script src="js/Burlesque_Manage_UI.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="style/Burlesque_Manage.css"/>
+</head>
+
+<body onload="init_manage_form()">
+    <div id="messages"></div>
+    <h3>Add or Select Room</h3>
+    <table id="room_select_table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Room</th>
+                <th>Description</th>
+                <th>Font</th>
+                <th>Color</th>
+                <th>Alias</th>
+                <th>Public</th>
+            </tr>
+        </thead>
+    </table>
+    <div id="room_edit_interface" style="display:none;">
+        <h3>Room Details</h3>
+        <div id="room_edit">
+            <input id="room_id" hidden=true/>
+            <label for="room_name">Room Name</label>
+            <input id="room_name" type="text"/>
+            <br/>
+            <label for="room_description">Room Description</label>
+            <input id="room_description" type="text"/>
+            <br/>
+            <label for="room_font">Default Font</label>
+            <input id="room_font" type="text"/>
+            <br/>
+            <label for="room_color">Default Color</label>
+            <select id="room_color" onchange="color_change()"></select>
+            <br/>
+            <label for="room_allow_alias">Allow Username Alias</label>
+            <input id="room_allow_alias" type="checkbox"/>
+            <br/>
+            <label for="room_is_public">Public Room</label>
+            <input id="room_is_public" type="checkbox"/>
+            <br/>
+            <button id="room_save" value="Save" onclick="save_room()">Save Changes</button>
+            <button id="room_delete" value="Delete" onclick="delete_room()">Delete Room</button>
+        </div>
+    </div>
+    <div id="users_interface" style="display: none;">
+        <h3>Room Users</h3>
+        <table id="room_users_table">
+            <thead>
+                <tr>
+                    <th>Forum Name</th> 
+                    <th>Display Name</th>
+                    <th>Last Login</th>
+                    <th>Last Post</th>
+                    <th>Last Logout</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</body>
+</html>
