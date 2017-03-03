@@ -1,9 +1,9 @@
 <?php
-	require_once($_SERVER['DOCUMENT_ROOT'].'/../config/Burlesque_Config.php');
-	require_once('xf_integrations.php');
-	require_once('classes.php');	
-	require_once('database.php');
-    require_once("jbbcode-1.2.0/Parser.php");
+require_once($_SERVER['DOCUMENT_ROOT'].'/../config/Burlesque_Config.php');
+require_once('xf_integrations.php');
+require_once('classes.php');	
+require_once('database.php');
+require_once("jbbcode-1.2.0/Parser.php");
 		
 class Burlesque
 {
@@ -23,7 +23,8 @@ class Burlesque
         
         $this->InputData = $input_data;
         
-        $this->DT = new DateTime("now", new DateTimeZone($this->Visitor->get('timezone'))); 
+	$this->DT = new DateTime("now", 
+		new DateTimeZone($this->Visitor->get('timezone'))); 
             
         $timestamp = time();
         $this->DT->setTimestamp($timestamp);
@@ -54,12 +55,14 @@ class Burlesque
             case 'login':
                 $this->Output['colors'] = $this->getColors();
                 $this->Output['login'] = $this->doLogin();
-                $this->Output['login']['settings'] = array('color'=>$this->InputData->login->color);
+		$this->Output['login']['settings'] = array(
+				'color'=>$this->InputData->login->color);
                 $this->Output['posts'] = $this->getPosts();
                 break;
             case 'post':
                 $this->Output = $this->doPost();
-                $this->Output['user']['settings'] = array('color'=>$this->InputData->post->color);
+		$this->Output['user']['settings'] = array(
+				'color'=>$this->InputData->post->color);
                 $this->Output['posts'] = $this->getPosts();
                 break;
             case 'load':
@@ -73,7 +76,8 @@ class Burlesque
     function getRooms()
     {
         $rooms_list = array();
-        $rooms = $this->Database->get_room_list($this->Visitor->get('user_id'));
+	$rooms = $this->Database->get_room_list(
+					$this->Visitor->get('user_id'));
         foreach($rooms as $_room)
         {
             $rooms_list[] = Room::fromDBResult($_room)->toArray();
@@ -106,7 +110,8 @@ class Burlesque
         {
             $display_name = $forum_name;
         }
-        $user = User::fromDBResult($this->Database->get_user($display_name, $room->id));
+	$user = User::fromDBResult($this->Database->get_user($display_name, 
+							     $room->id));
         if(!$user->id)
         {
             $user = new User();
@@ -114,7 +119,8 @@ class Burlesque
             $user->forum_id         = $this->Visitor->get('user_id');
             $user->forum_name       = $forum_name;
             $user->room_id          = $room->id;
-            $user->id               = $this->Database->add_user($user, $room->id);
+	    $user->id               = $this->Database->add_user($user, 
+		    						$room->id);
         }
         else
         {
@@ -124,7 +130,8 @@ class Burlesque
             $this->DT->setTimestamp(0);
             $user->logout = $this->DT->format('Y-m-d H:i:s');
             $this->Database->update_user($user);
-            $user = User::fromDBResult($this->Database->get_user_by_id($user->id));
+	    $user = User::fromDBResult(
+		    $this->Database->get_user_by_id($user->id));
         }
         
         $this->Session->set('room'.$room->id.'user'.$user->id, array(
@@ -148,7 +155,8 @@ class Burlesque
         $post->font             = $this->InputData->login->font;
         $post->message          = $this->InputData->login->message;
         
-        $this->Database->add_post($post, $room->id, $this->InputData->login->message);
+	$this->Database->add_post($post, $room->id, 
+				  $this->InputData->login->message);
         
         return $user->toArray();
     }
@@ -167,7 +175,8 @@ class Burlesque
         
         $room = $this->getRoom($this->InputData->post->room_id);
         $display_name = $this->InputData->post->display_name;
-        $user = User::fromDBResult($this->Database->get_user($display_name, $room->id));
+	$user = User::fromDBResult($this->Database->get_user($display_name, 
+							     $room->id));
         $post = new Post();
         $post->prefix           = "";
         $post->prefix_color     = "";
@@ -181,7 +190,8 @@ class Burlesque
         $post->font             = $this->InputData->post->room_id;
         $post->message          = $parser->getAsHtml();
         
-        $post->id = $this->Database->add_post($post, $room->id, $this->InputData->post->message);
+	$post->id = $this->Database->add_post($post, $room->id, 
+		                              $this->InputData->post->message);
         
         return array("post"=>$post->toArray(), "user"=>$user->toArray());
     }
@@ -189,7 +199,7 @@ class Burlesque
     function getPosts()
     {
         $post_array = array();
-        $posts = $this->Database->get_posts($this->InputData->load);//, 30, false;);
+        $posts = $this->Database->get_posts($this->InputData->load);
         foreach($posts as $_post_data)
         {
             $post_array[] = Post::fromDBResult($_post_data)->toArray();
