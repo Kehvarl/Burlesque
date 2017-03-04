@@ -10,14 +10,14 @@ class Burlesque
     private $Visitor;
     private $Session;
     private $InputData;
-    private $DT;
+
     private $Database;
     
     public $Output;
     
     function __construct($config, $input_data)
     {
-        $this->Visitor = initialize();
+        $this->Visitor = initialize($_SERVER['DOCUMENT_ROOT']);
     
         $this->Session = XenForo_Session::startPublicSession();
         
