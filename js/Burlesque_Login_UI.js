@@ -209,8 +209,10 @@ function load_posts(posts)
 			html += "<span class=\"prefix\" style=\"color:" + post.prefix_color;
 			html += ";\" >{" + post.prefix + "}</span>";
 		}
-		html += "<span class=\"username\">" + post.sender + ": </span>";
-		html += "<span class=\"message\">" + post.message + "</span>";
+		html += "<span class=\"username\">" + post.sender + "</span>";
+		if(post.sender != "" && post.prefix != "ME")
+			html += ": ";
+		html += " <span class=\"message\">" + post.message + "</span>";
 		html += "<span class=\"timestamp\"> [" + post.timestamp + "] </span>";
 		line.innerHTML = html;
 		messages.appendChild(line);

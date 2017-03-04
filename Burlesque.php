@@ -13,22 +13,24 @@ class Burlesque
 
     private $Database;
     
+    private $user_color;
+    private $user_font;
+    
     public $Output;
     
     function __construct($config, $input_data)
     {
+        //Connect to Xenforo
         $this->Visitor = initialize($_SERVER['DOCUMENT_ROOT']);
-    
         $this->Session = XenForo_Session::startPublicSession();
         
-        $this->InputData = $input_data;
-        
-	$this->DT = new DateTime("now", 
-		new DateTimeZone($this->Visitor->get('timezone'))); 
-            
+        //Setup Datetime module
+        $this->DT = new DateTime("now", 
+            new DateTimeZone($this->Visitor->get('timezone'))); 
         $timestamp = time();
         $this->DT->setTimestamp($timestamp);
         
+        //Connect to Database
         $this->Database = new Burlesque_DB_Tools(
                                      $config['db']['username'],
                                      $config['db']['password'],
@@ -40,6 +42,9 @@ class Burlesque
         {
             error_log($this->Database->error);
         }
+        
+        //Get input from user
+        $this->InputData = $input_data;
     }
     
     function process()
@@ -55,14 +60,16 @@ class Burlesque
             case 'login':
                 $this->Output['colors'] = $this->getColors();
                 $this->Output['login'] = $this->doLogin();
-		$this->Output['login']['settings'] = array(
-				'color'=>$this->InputData->login->color);
+                $this->Output['login']['settings'] = array(
+                                    'color'=>$this->InputData->login->color);
                 $this->Output['posts'] = $this->getPosts();
+                break;
+            case 'logout':
                 break;
             case 'post':
                 $this->Output = $this->doPost();
-		$this->Output['user']['settings'] = array(
-				'color'=>$this->InputData->post->color);
+                $this->Output['user']['settings'] = array(
+                                    'color'=>$this->InputData->post->color);
                 $this->Output['posts'] = $this->getPosts();
                 break;
             case 'load':
@@ -76,8 +83,8 @@ class Burlesque
     function getRooms()
     {
         $rooms_list = array();
-	$rooms = $this->Database->get_room_list(
-					$this->Visitor->get('user_id'));
+        $rooms = $this->Database->get_room_list(
+                                    $this->Visitor->get('user_id'));
         foreach($rooms as $_room)
         {
             $rooms_list[] = Room::fromDBResult($_room)->toArray();
@@ -110,8 +117,9 @@ class Burlesque
         {
             $display_name = $forum_name;
         }
-	$user = User::fromDBResult($this->Database->get_user($display_name, 
-							     $room->id));
+        $user = User::fromDBResult(
+                    $this->Database->get_user(  $display_name, 
+                                                $room->id));
         if(!$user->id)
         {
             $user = new User();
@@ -119,8 +127,8 @@ class Burlesque
             $user->forum_id         = $this->Visitor->get('user_id');
             $user->forum_name       = $forum_name;
             $user->room_id          = $room->id;
-	    $user->id               = $this->Database->add_user($user, 
-		    						$room->id);
+            $user->id               = $this->Database->add_user($user, 
+                                                                $room->id);
         }
         else
         {
@@ -130,8 +138,8 @@ class Burlesque
             $this->DT->setTimestamp(0);
             $user->logout = $this->DT->format('Y-m-d H:i:s');
             $this->Database->update_user($user);
-	    $user = User::fromDBResult(
-		    $this->Database->get_user_by_id($user->id));
+            $user = User::fromDBResult(
+                                $this->Database->get_user_by_id($user->id));
         }
         
         $this->Session->set('room'.$room->id.'user'.$user->id, array(
@@ -154,9 +162,9 @@ class Burlesque
         $post->color            = $this->InputData->login->color;
         $post->font             = $this->InputData->login->font;
         $post->message          = $this->InputData->login->message;
-        
-	$this->Database->add_post($post, $room->id, 
-				  $this->InputData->login->message);
+	
+        $this->Database->add_post($post, $room->id, 
+                            $this->InputData->login->message);
         
         return $user->toArray();
     }
@@ -175,8 +183,8 @@ class Burlesque
         
         $room = $this->getRoom($this->InputData->post->room_id);
         $display_name = $this->InputData->post->display_name;
-	$user = User::fromDBResult($this->Database->get_user($display_name, 
-							     $room->id));
+        $user = User::fromDBResult($this->Database->get_user(   $display_name, 
+                                                                $room->id));
         $post = new Post();
         $post->prefix           = "";
         $post->prefix_color     = "";
@@ -190,10 +198,74 @@ class Burlesque
         $post->font             = $this->InputData->post->room_id;
         $post->message          = $parser->getAsHtml();
         
-	$post->id = $this->Database->add_post($post, $room->id, 
+        $post = $this->post_actions($post);
+        
+        $post->id = $this->Database->add_post($post, $room->id, 
 		                              $this->InputData->post->message);
         
         return array("post"=>$post->toArray(), "user"=>$user->toArray());
+    }
+    
+    function post_actions($post)
+    {
+        if(!substr($post->message, 0, 1) == "/")
+            return $post;
+        
+        $post_message = $post->message;
+        
+        $action = trim(strtok($post_message, ' '), '/');
+        switch(strtolower($action))
+        {
+            case "gm":  // /gm message
+                $post->prefix           = "GM";
+                $post->prefix_color     = "#0088aa";
+                $post->sender           = "";
+                $post->message          = strtok("\n");
+                break;
+            case "nar": // /nar message
+                $post->prefix           = "NARRATOR";
+                $post->prefix_color     = "#00aa88";
+                $post->sender           = "";
+                $post->message          = strtok("\n");
+                break;
+            case "chat": // /chat message
+                $post->prefix           = "CHAT";
+                $post->prefix_color     = "#FFFFFF";
+                $post->sender           = "";
+                $post->message          = strtok("\n");
+                break;
+            case "char": // /char name:message
+                $post->prefix           = "CHAR";
+                $post->prefix_color     = "#c0c0c0";
+                $post->sender           = strtok(":");
+                $post->message          = strtok("\n");
+                break;
+            case "me":  // /me message
+                $post->prefix           = "ME";
+                $post->prefix_color     = $post->color;
+                $post->message          = strtok("\n");
+                break;
+            case "pref": // /pref prefix:message
+                $post->prefix           = strtoupper(strtok(":"));
+                if(strlen($post->prefix) > 12)
+                    $post->prefix = substr($post->prefix, 0, 11);
+                $post->prefix_color     = $post->color;
+                $post->message          = strtok("\n");
+                break;
+            case "color":
+                $post->prefix           = "COLOR";
+                $post->prefix_color     = "#c0c0c0";
+                $post->message          = "has chosen a new color.";
+                $this->user_color = strtok("\n");
+                break;
+            case "font":
+                $post->prefix           = "FONT";
+                $post->prefix_color     = "#c0c0c0";
+                $post->message          = "has chosen a new font.";
+                $this->user_font = strtok("\n");
+                break;
+        }
+        return $post;
     }
     
     function getPosts()
