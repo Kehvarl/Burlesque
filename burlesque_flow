@@ -35,9 +35,9 @@ Switch Action
 	Post
 		User in room as username?
 		Set User Post Time
-		Perform Post Actions
 		Perform Post BBCode
 		Perform Post ChatTags
+		Perform Post Actions
 		Add Post to Room
 		Return Room Users
 		Return Room Posts
@@ -55,6 +55,10 @@ Perform Post Actions (post)
 		char
 			Perform a post with the {CHAR} prefix and 
 			a provided username and color.
+		me
+			Perform a post with the {ME} prefix and no :
+		chat
+			Perform a Post with the {CHAT} prefix and no username
 		roll
 			Roll <number>d<sides> dice and post
 			{ROLL} $name rolled $num d $sides with results...

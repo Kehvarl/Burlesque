@@ -3,7 +3,6 @@ require_once($_SERVER['DOCUMENT_ROOT'].'/../config/Burlesque_Config.php');
 require_once('xf_integrations.php');
 require_once('classes.php');	
 require_once('database.php');
-require_once("jbbcode-1.2.0/Parser.php");
 		
 class Burlesque
 {
@@ -68,9 +67,12 @@ class Burlesque
                 break;
             case 'post':
                 $this->Output = $this->doPost();
-                $this->Output['user']['settings'] = array(
-                                    'color'=>$this->InputData->post->color);
+                $this->user_color = $this->InputData->post->color;
+                $this->user_font = $this->InputData->post->font;
                 $this->Output['posts'] = $this->getPosts();
+                $this->Output['user']['settings'] = array(
+                                    'color'=>$this->user_color,
+                                    'font'=>$this->user_font);
                 break;
             case 'load':
                 $this->Output['posts'] = $this->getPosts();
@@ -175,11 +177,8 @@ class Burlesque
         
         //Verify message has no illegal characters
         $message = htmlentities($message, ENT_QUOTES | ENT_IGNORE, "UTF-8");
-        
-        //Process any bbcode, custom tags, or URLs
-        $parser = new JBBCode\Parser();
-        $parser->addCodeDefinitionSet(new JBBCode\BasicCodeDefinitionSet());
-        $parser->parse($message);
+        //Apply BBCode to message
+        $message = $this->post_bbcode($message);
         
         $room = $this->getRoom($this->InputData->post->room_id);
         $display_name = $this->InputData->post->display_name;
@@ -196,14 +195,46 @@ class Burlesque
         $post->target           = "";
         $post->color            = $this->InputData->post->color;
         $post->font             = $this->InputData->post->room_id;
-        $post->message          = $parser->getAsHtml();
+        $post->message          = $message;
         
+        //Perform slashcommands on post
         $post = $this->post_actions($post);
         
         $post->id = $this->Database->add_post($post, $room->id, 
 		                              $this->InputData->post->message);
         
         return array("post"=>$post->toArray(), "user"=>$user->toArray());
+    }
+    
+    function post_bbcode($post_message)
+    {
+        // Patterns
+        $pat = array();
+        $pat[] = '/\[url\](.*?)\[\/url\]/isU';         // URL Type 1
+        $pat[] = '/\[url=(.*?)\](.*?)\[\/url\]/isU';   // URL Type 2
+        $pat[] = '/\[b\](.*?)\[\/b\]/isU';             // bold
+        $pat[] = '/\[i\](.*?)\[\/i\]/isU';             // italic
+        $pat[] = '/\[u\](.*?)\[\/u\]/isU';             // underline
+        $pat[] = '/\[s\](.*?)\[\/s\]/isU';             // striike
+        $pat[] = '/\[spoil\](.*?)\[\/spoil\]/isU';     // spoiler
+        $pat[] = '/\[color=(.*?)\](.*?)\[\/color\]/isU'; // color
+        $pat[] = '/\[font=(.*?)\](.*?)\[\/font\]/isU';   // font
+        $pat[] = '/\[rainbow\](.*?)\[\/rainbow\]/isU';    // Rainbow effect
+        
+        // Replacements
+        $rep = array();
+        $rep[] = '<a href="$1">$1</a>';             // URL Type 1
+        $rep[] = '<a href="$1">$2</a>';             // URL Type 2
+        $rep[] = '<b> $1 </b>';                     // Bold
+        $rep[] = '<i> $1 </i>';                     // Italic
+        $rep[] = '<u> $1 </u>';                     // Underline
+        $rep[] = '<span style="text-decoration: line-through;">$1</span>'; // Strike
+        $rep[] = '<span class="spoiler">$1</span>'; //Spoler
+        $rep[] = '<span style="font-color: $1;">$2</span>';  //Color
+        $rep[] = '<span style="font-family: $1, Verdana, sans-serif;">$2</span>';  //Font
+        $rep[] = '<span class="rainbow">$1</span>'; //Rainbow
+        
+        return preg_replace($pat, $rep, $post_message);
     }
     
     function post_actions($post)
@@ -263,6 +294,64 @@ class Burlesque
                 $post->prefix_color     = "#c0c0c0";
                 $post->message          = "has chosen a new font.";
                 $this->user_font = strtok("\n");
+                break;
+            case "roll":
+                //get die-roll arguments: [num]d[sides][e[+/-each]][t[+/-tot]][l[low]][h[high]]
+                $filter = '/(?P<number>\d+)d(?P<sides>\d+)(?:e(?P<each>[-+]?\d+))?(?:t(?P<total>[-+]?\d+))?/';
+                preg_match($filter, trim(strtok("\n")), $matches);
+                
+                $number = $matches['number'];
+                if($number < 1)
+                    $number = 1;
+                if($number > 100)
+                    $number = 100;
+                
+                $sides  = $matches['sides'];
+                if($sides < 2)
+                    $sides = 2;
+                if($sides > 1000)
+                    $sides = 1000;
+                    
+                if(isset($matches['each']) && is_numeric($matches['each']))
+                    $each   = $matches['each'];
+                else
+                    $each = 0;
+                if(isset($matches['total']) && is_numeric($matches['total']))
+                    $total  = $matches['total'];
+                else
+                    $total = 0;
+                    
+                $message = "has rolled $number ${sides}-sided dice ";
+                if($each >0)
+                    $message .=",$each to each ";
+                if($each <0)
+                    $message .=",$each to each ";
+                if($total >0)
+                    $message .=",$total to total ";
+                if($total <0)
+                    $message .=",$total to total ";
+                $message .="with results: [";
+                
+                $roll_min = 100000000;
+                $roll_max = 0;
+                $roll_sum = 0;
+                for($d = 0; $d < $number; $d++)
+                {
+                    $roll = rand(1, $sides) + $each;
+                    $message .= "$roll";
+                    if($d < $number -1)
+                        $message .=", ";
+                    $roll_sum += $roll;
+                    $roll_min = min($roll_min, $roll);
+                    $roll_max = max($roll_max, $roll);
+                }
+                $roll_sum += $total;
+                $roll_avg = round($roll_sum/$number);
+                $message .="] {Total: $roll_sum; Average: $roll_avg; Low: $roll_min; High: $roll_max}";
+                
+                $post->prefix           = "ROLL";
+                $post->prefix_color     = "#804000";
+                $post->message          = $message;
                 break;
         }
         return $post;
