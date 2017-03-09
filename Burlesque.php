@@ -244,8 +244,8 @@ class Burlesque
         
         $post_message = $post->message;
         
-        $action = trim(strtok($post_message, ' '), '/');
-        switch(strtolower($action))
+        $action = strtolower(trim(strtok($post_message, ' '), '/'));
+        switch($action)
         {
             case "gm":  // /gm message
                 $post->prefix           = "GM";
@@ -254,85 +254,72 @@ class Burlesque
                 $post->message          = strtok("\n");
                 break;
             case "nar": // /nar message
-                $post->prefix           = "NARRATOR";
+                $post->prefix           = "Narrator";
                 $post->prefix_color     = "#00aa88";
                 $post->sender           = "";
                 $post->message          = strtok("\n");
                 break;
             case "chat": // /chat message
-                $post->prefix           = "CHAT";
+                $post->prefix           = "Chat";
                 $post->prefix_color     = "#FFFFFF";
                 $post->sender           = "";
                 $post->message          = strtok("\n");
                 break;
             case "char": // /char name:message
-                $post->prefix           = "CHAR";
+                $post->prefix           = "Char";
                 $post->prefix_color     = "#c0c0c0";
                 $post->sender           = strtok(":");
                 $post->message          = strtok("\n");
                 break;
             case "me":  // /me message
-                $post->prefix           = "ME";
+            case "act":  // /me message
+            case "do":  // /me message
+                $post->prefix           = ucfirst($action);
                 $post->prefix_color     = $post->color;
                 $post->message          = strtok("\n");
                 break;
             case "pref": // /pref prefix:message
-                $post->prefix           = strtoupper(strtok(":"));
+                $post->prefix           = ucfirst(strtolower((strtok(":")));
                 if(strlen($post->prefix) > 12)
                     $post->prefix = substr($post->prefix, 0, 11);
                 $post->prefix_color     = $post->color;
                 $post->message          = strtok("\n");
                 break;
             case "color":
-                $post->prefix           = "COLOR";
+                $post->prefix           = "Color";
                 $post->prefix_color     = "#c0c0c0";
                 $post->message          = "has chosen a new color.";
                 $this->user_color = strtok("\n");
                 break;
             case "font":
-                $post->prefix           = "FONT";
+                $post->prefix           = "Font";
                 $post->prefix_color     = "#c0c0c0";
                 $post->message          = "has chosen a new font.";
                 $this->user_font = strtok("\n");
                 break;
             case "roll":
-                //get die-roll arguments: [num]d[sides][e[+/-each]][t[+/-tot]][l[low]][h[high]]
+                //get die-roll arguments: [num]d[sides]{e[+/-each]}{t[+/-tot]}{l[low]][h[high]}
                 $filter = '/(?P<number>\d+)d(?P<sides>\d+)(?:e(?P<each>[-+]?\d+))?(?:t(?P<total>[-+]?\d+))?/';
                 preg_match($filter, trim(strtok("\n")), $matches);
                 
-                $number = $matches['number'];
-                if($number < 1)
-                    $number = 1;
-                if($number > 100)
-                    $number = 100;
-                
-                $sides  = $matches['sides'];
-                if($sides < 2)
-                    $sides = 2;
-                if($sides > 1000)
-                    $sides = 1000;
+                $number = min(max($matches['number'], 1), 100);               
+                $sides  = min(max($matches['sides'], 2), 1000);
+                $each = 0
+                $total = 0
                     
                 if(isset($matches['each']) && is_numeric($matches['each']))
-                    $each   = $matches['each'];
-                else
-                    $each = 0;
+                    $each   = min(max($matches['each'], -100), 100);
                 if(isset($matches['total']) && is_numeric($matches['total']))
-                    $total  = $matches['total'];
-                else
-                    $total = 0;
+                    $total  = min(max($matches['total'], -100), 100);
                     
                 $message = "has rolled $number ${sides}-sided dice ";
-                if($each >0)
+                if(is_int($each) && $each != 0)
                     $message .=",$each to each ";
-                if($each <0)
-                    $message .=",$each to each ";
-                if($total >0)
-                    $message .=",$total to total ";
-                if($total <0)
+                if(is_int($total) && $total != 0)
                     $message .=",$total to total ";
                 $message .="with results: [";
                 
-                $roll_min = 100000000;
+                $roll_min = 1100; //Max is 1000e100 for 1100 per roll
                 $roll_max = 0;
                 $roll_sum = 0;
                 for($d = 0; $d < $number; $d++)
@@ -345,11 +332,12 @@ class Burlesque
                     $roll_min = min($roll_min, $roll);
                     $roll_max = max($roll_max, $roll);
                 }
-                $roll_sum += $total;
-                $roll_avg = round($roll_sum/$number);
+                $roll_avg = round(($roll_sum+$total)/$number);
+                if($total != 0)
+                     $roll_sum = $roll_sum . $total . "(".$roll_sum+$total.")";
                 $message .="] {Total: $roll_sum; Average: $roll_avg; Low: $roll_min; High: $roll_max}";
                 
-                $post->prefix           = "ROLL";
+                $post->prefix           = "Roll";
                 $post->prefix_color     = "#804000";
                 $post->message          = $message;
                 break;
