@@ -1,8 +1,8 @@
 <?php
 	require_once($_SERVER['DOCUMENT_ROOT'].'/../config/Burlesque_Config.php');
-	require_once('xf_integrations.php');
-	require_once('classes.php');	
-	require_once('database.php');
+	require_once('includes/xf_integrations.php');
+	require_once('includes/classes.php');	
+	require_once('includes/database.php');
 		
 	$visitor = initialize();
 

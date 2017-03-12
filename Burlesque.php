@@ -1,8 +1,10 @@
 <?php
 require_once($_SERVER['DOCUMENT_ROOT'].'/../config/Burlesque_Config.php');
-require_once('xf_integrations.php');
-require_once('classes.php');	
-require_once('database.php');
+require_once('includes/xf_integrations.php');
+require_once('includes/classes.php');	
+require_once('includes/database.php');
+require_once('includes/Burlesque_BBCode.php');
+require_once('includes/Burlesque_Commands.php');
 		
 class Burlesque
 {
@@ -42,7 +44,7 @@ class Burlesque
             error_log($this->Database->error);
         }
         
-        //Get input from user
+        //Get information from user
         $this->InputData = $input_data;
     }
     
@@ -60,15 +62,15 @@ class Burlesque
                 $this->Output['colors'] = $this->getColors();
                 $this->Output['login'] = $this->doLogin();
                 $this->Output['login']['settings'] = array(
-                                    'color'=>$this->InputData->login->color);
+                                    'color'=>$this->InputData->data->color);
                 $this->Output['posts'] = $this->getPosts();
                 break;
             case 'logout':
                 break;
             case 'post':
                 $this->Output = $this->doPost();
-                $this->user_color = $this->InputData->post->color;
-                $this->user_font = $this->InputData->post->font;
+                $this->user_color = $this->InputData->data->color;
+                $this->user_font = $this->InputData->data->font;
                 $this->Output['posts'] = $this->getPosts();
                 $this->Output['user']['settings'] = array(
                                     'color'=>$this->user_color,
@@ -112,18 +114,21 @@ class Burlesque
     
     function doLogin()
     {
-        $room = $this->getRoom($this->InputData->login->room);
-        $display_name   = $this->InputData->login->display_name;
+        //Get user login details (room, desired name, forum info, etc)
+        $room = $this->getRoom($this->InputData->data->room_id);
+        $display_name   = $this->InputData->data->display_name;
         $forum_name     = $this->Visitor->get('username');
         if(!$room->allow_alias)
         {
             $display_name = $forum_name;
         }
+        //Try to load user details from database
         $user = User::fromDBResult(
                     $this->Database->get_user(  $display_name, 
                                                 $room->id));
         if(!$user->id)
         {
+            //User not in DB.  Create new for current room
             $user = new User();
             $user->display_name     = $display_name;
             $user->forum_id         = $this->Visitor->get('user_id');
@@ -134,6 +139,7 @@ class Burlesque
         }
         else
         {
+            //User in DB.  Update post and logout times.
             $this->DT->setTimestamp(time());
             $user->login = $this->DT->format('Y-m-d H:i:s');
             $user->last_post = $this->DT->format('Y-m-d H:i:s');
@@ -144,207 +150,61 @@ class Burlesque
                                 $this->Database->get_user_by_id($user->id));
         }
         
+        //Store user details in session
         $this->Session->set('room'.$room->id.'user'.$user->id, array(
-                'color'=> $this->InputData->login->color,
-                'font' => $this->InputData->login->font,
+                'color'=> $this->InputData->data->color,
+                'font' => $this->InputData->data->font,
                 'name' => $user->display_name,
                 'id'   => $user->id
         ));
         $this->Session->save();
         
-        $post = new Post();
-        $post->prefix           = "Login";
-        $post->prefix_color     = "#33cc33";
-        $post->sender_id        = $user->id;
-        $post->sender_forum_id  = $user->forum_id;
-        $post->sender_forum     = $user->forum_name;
-        $post->sender           = $user->display_name;
-        $post->target_id        = 0;
-        $post->target           = "";
-        $post->color            = $this->InputData->login->color;
-        $post->font             = $this->InputData->login->font;
-        $post->message          = $this->InputData->login->message;
-	
-        $this->Database->add_post($post, $room->id, 
-                            $this->InputData->login->message);
+        //Login Post
+        $this->doPost("Login", "#33xx33", false);
         
+        //Return User data to send to client
         return $user->toArray();
     }
     
-    function doPost()
+    function doPost($prefix = "", $prefix_color = "", $allow_commands = true)
     {
-        $message = $this->InputData->post->message;
+        $message = $this->InputData->data->message;
         
         //Verify message has no illegal characters
         $message = htmlentities($message, ENT_QUOTES | ENT_IGNORE, "UTF-8");
-        //Apply BBCode to message
-        $message = $this->post_bbcode($message);
         
-        $room = $this->getRoom($this->InputData->post->room_id);
-        $display_name = $this->InputData->post->display_name;
+        $room = $this->getRoom($this->InputData->data->room_id);
+        $display_name = $this->InputData->data->display_name;
         $user = User::fromDBResult($this->Database->get_user(   $display_name, 
                                                                 $room->id));
         $post = new Post();
-        $post->prefix           = "";
-        $post->prefix_color     = "";
+        $post->prefix           = $prefix;
+        $post->prefix_color     = $prefix_color;
         $post->sender_id        = $user->id;
         $post->sender_forum_id  = $user->forum_id;
         $post->sender_forum     = $user->forum_name;
         $post->sender           = $user->display_name;
         $post->target_id        = 0;
         $post->target           = "";
-        $post->color            = $this->InputData->post->color;
-        $post->font             = $this->InputData->post->room_id;
+        $post->color            = $this->InputData->data->color;
+        $post->font             = $this->InputData->data->room_id;
         $post->message          = $message;
         
-        //Perform slashcommands on post
-        $post = $this->post_actions($post);
+        if($allow_commands)
+        {
+            //Perform slashcommands on post
+            $post = Burlesque_Commands($post);
+        }
+        
+        //Apply BBCode to message
+        $message = Burlesque_BBCode($message);
         
         $post->id = $this->Database->add_post($post, $room->id, 
-		                              $this->InputData->post->message);
+		                              $this->InputData->data->message);
         
         return array("post"=>$post->toArray(), "user"=>$user->toArray());
-    }
-    
-    function post_bbcode($post_message)
-    {
-        // Patterns
-        $pat = array();
-        $pat[] = '/\[url\](.*?)\[\/url\]/isU';         // URL Type 1
-        $pat[] = '/\[url=(.*?)\](.*?)\[\/url\]/isU';   // URL Type 2
-        $pat[] = '/\[b\](.*?)\[\/b\]/isU';             // bold
-        $pat[] = '/\[i\](.*?)\[\/i\]/isU';             // italic
-        $pat[] = '/\[u\](.*?)\[\/u\]/isU';             // underline
-        $pat[] = '/\[s\](.*?)\[\/s\]/isU';             // striike
-        $pat[] = '/\[spoil\](.*?)\[\/spoil\]/isU';     // spoiler
-        $pat[] = '/\[color=(.*?)\](.*?)\[\/color\]/isU'; // color
-        $pat[] = '/\[font=(.*?)\](.*?)\[\/font\]/isU';   // font
-        $pat[] = '/\[rainbow\](.*?)\[\/rainbow\]/isU';    // Rainbow effect
+    }  
         
-        // Replacements
-        $rep = array();
-        $rep[] = '<a href="$1">$1</a>';             // URL Type 1
-        $rep[] = '<a href="$1">$2</a>';             // URL Type 2
-        $rep[] = '<b> $1 </b>';                     // Bold
-        $rep[] = '<i> $1 </i>';                     // Italic
-        $rep[] = '<u> $1 </u>';                     // Underline
-        $rep[] = '<span style="text-decoration: line-through;">$1</span>'; // Strike
-        $rep[] = '<span class="spoiler">$1</span>'; //Spoler
-        $rep[] = '<span style="font-color: $1;">$2</span>';  //Color
-        $rep[] = '<span style="font-family: $1, Verdana, sans-serif;">$2</span>';  //Font
-        $rep[] = '<span class="rainbow">$1</span>'; //Rainbow
-        
-        return preg_replace($pat, $rep, $post_message);
-    }
-    
-    function post_actions($post)
-    {
-        if(!substr($post->message, 0, 1) == "/")
-            return $post;
-        
-        $post_message = $post->message;
-        
-        $action = strtolower(trim(strtok($post_message, ' '), '/'));
-        switch($action)
-        {
-            case "gm":  // /gm message
-                $post->prefix           = "GM";
-                $post->prefix_color     = "#0088aa";
-                $post->sender           = "";
-                $post->message          = strtok("\n");
-                break;
-            case "nar": // /nar message
-                $post->prefix           = "Narrator";
-                $post->prefix_color     = "#00aa88";
-                $post->sender           = "";
-                $post->message          = strtok("\n");
-                break;
-            case "chat": // /chat message
-                $post->prefix           = "Chat";
-                $post->prefix_color     = "#FFFFFF";
-                $post->sender           = "";
-                $post->message          = strtok("\n");
-                break;
-            case "char": // /char name:message
-                $post->prefix           = "Char";
-                $post->prefix_color     = "#c0c0c0";
-                $post->sender           = strtok(":");
-                $post->message          = strtok("\n");
-                break;
-            case "me":  // /me message
-            case "act":  // /me message
-            case "do":  // /me message
-                $post->prefix           = ucfirst($action);
-                $post->prefix_color     = $post->color;
-                $post->message          = strtok("\n");
-                break;
-            case "pref": // /pref prefix:message
-                $post->prefix           = ucfirst(strtolower((strtok(":")));
-                if(strlen($post->prefix) > 12)
-                    $post->prefix = substr($post->prefix, 0, 11);
-                $post->prefix_color     = $post->color;
-                $post->message          = strtok("\n");
-                break;
-            case "color":
-                $post->prefix           = "Color";
-                $post->prefix_color     = "#c0c0c0";
-                $post->message          = "has chosen a new color.";
-                $this->user_color = strtok("\n");
-                break;
-            case "font":
-                $post->prefix           = "Font";
-                $post->prefix_color     = "#c0c0c0";
-                $post->message          = "has chosen a new font.";
-                $this->user_font = strtok("\n");
-                break;
-            case "roll":
-                //get die-roll arguments: [num]d[sides]{e[+/-each]}{t[+/-tot]}{l[low]][h[high]}
-                $filter = '/(?P<number>\d+)d(?P<sides>\d+)(?:e(?P<each>[-+]?\d+))?(?:t(?P<total>[-+]?\d+))?/';
-                preg_match($filter, trim(strtok("\n")), $matches);
-                
-                $number = min(max($matches['number'], 1), 100);               
-                $sides  = min(max($matches['sides'], 2), 1000);
-                $each = 0
-                $total = 0
-                    
-                if(isset($matches['each']) && is_numeric($matches['each']))
-                    $each   = min(max($matches['each'], -100), 100);
-                if(isset($matches['total']) && is_numeric($matches['total']))
-                    $total  = min(max($matches['total'], -100), 100);
-                    
-                $message = "has rolled $number ${sides}-sided dice ";
-                if(is_int($each) && $each != 0)
-                    $message .=",$each to each ";
-                if(is_int($total) && $total != 0)
-                    $message .=",$total to total ";
-                $message .="with results: [";
-                
-                $roll_min = 1100; //Max is 1000e100 for 1100 per roll
-                $roll_max = 0;
-                $roll_sum = 0;
-                for($d = 0; $d < $number; $d++)
-                {
-                    $roll = rand(1, $sides) + $each;
-                    $message .= "$roll";
-                    if($d < $number -1)
-                        $message .=", ";
-                    $roll_sum += $roll;
-                    $roll_min = min($roll_min, $roll);
-                    $roll_max = max($roll_max, $roll);
-                }
-                $roll_avg = round(($roll_sum+$total)/$number);
-                if($total != 0)
-                     $roll_sum = $roll_sum . $total . "(".$roll_sum+$total.")";
-                $message .="] {Total: $roll_sum; Average: $roll_avg; Low: $roll_min; High: $roll_max}";
-                
-                $post->prefix           = "Roll";
-                $post->prefix_color     = "#804000";
-                $post->message          = $message;
-                break;
-        }
-        return $post;
-    }
-    
     function getPosts()
     {
         $post_array = array();
@@ -358,11 +218,11 @@ class Burlesque
     }
 }
 
-    $input_data = json_decode(file_get_contents("php://input"));
-    
-    $Burlesque = new Burlesque($config, $input_data);
-    $Burlesque->process();
-    
-    header('Content-Type','application/json; charset=UTF-8');  
-    echo json_encode($Burlesque->Output);
+$input_data = json_decode(file_get_contents("php://input"));
+
+$Burlesque = new Burlesque($config, $input_data);
+$Burlesque->process();
+
+header('Content-Type','application/json; charset=UTF-8');  
+echo json_encode($Burlesque->Output);
 ?>

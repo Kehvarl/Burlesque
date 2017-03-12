@@ -1,3 +1,5 @@
+var prefixes = ['Me', 'Act', 'Do', 'Fate', 'Roll'];
+
 function init_login_form()
 {
 	var xhr = new XMLHttpRequest();
@@ -48,8 +50,8 @@ function login()
 	xhr.send(JSON.stringify({
 		'action': 'login',
 		'load'  : room,
-		'login' : {
-			'room'  : room,
+		'data' : {
+			'room_id'  : room,
 			'color' : color,
 			'font'  : default_font,
 			'display_name': display_name,
@@ -101,7 +103,7 @@ function post_message()
 	xhr.send(JSON.stringify({
 		'action': 'post',
 		'load'  : post_room,
-		'post' : {
+		'data' : {
 			'room_id'  		: post_room,
 			'color' 		: post_color,
 			'font'  		: default_font,
@@ -210,7 +212,7 @@ function load_posts(posts)
 			html += ";\" >{" + post.prefix + "}</span>";
 		}
 		html += "<span class=\"username\">" + post.sender + "</span>";
-		if(post.sender != "" && post.prefix != "ME")
+		if(post.sender != "" && prefixes.indexOf(post.prefix) == -1)
 			html += ": ";
 		html += " <span class=\"message\">" + post.message + "</span>";
 		html += "<span class=\"timestamp\"> [" + post.timestamp + "] </span>";
@@ -251,6 +253,9 @@ var PageTitleNotification = {
         Interval: null
     },    
     On: function(notification, intervalSpeed){
+        clearInterval(this.Vars.Interval);
+		document.title = this.Vars.OriginalTitle;   
+        parent.document.title = document.title;
         var _this = this;
         _this.Vars.Interval = setInterval(function(){
              document.title = (_this.Vars.OriginalTitle == document.title)
