@@ -18,8 +18,9 @@ class Burlesque_Setup_Queries
         $query .= "`font` varchar(64) NOT NULL,";
         $query .= "`allow_alias` boolean NOT NULL DEFAULT 0,";
         $query .= "`is_public` boolean NOT NULL DEFAULT 1,";
-        $query .= "`description` text";
-        $query .= ") COMMENT='Burlesque Chat Rooms';";
+        $query .= "`description` texti,";
+	$query .= "`aspects`text";
+	$query .= ") COMMENT='Burlesque Chat Rooms';";
         return $query;
     }
     
@@ -38,7 +39,8 @@ class Burlesque_Setup_Queries
         $query .= "`target_name` varchar(255) NOT NULL,";
         $query .= "`color` varchar(32) NOT NULL,";
         $query .= "`font` varchar(64) NOT NULL,";
-        $query .= "`message` TEXT,";
+	$query .= "`message` TEXT,";
+	$query .= "`aspects` TEXT";
         $query .= "`raw` TEXT,";
         $query .= "`timestamp` TIMESTAMP DEFAULT CURRENT_TIMESTAMP";
         $query .= ") COMMENT='Burlesque Chat Posts';";
@@ -52,7 +54,8 @@ class Burlesque_Setup_Queries
         $query .= "`forum_id` int(11) UNSIGNED NOT NULL,";
         $query .= "`forum_name` VARCHAR(255) NOT NULL,";
         $query .= "`room_id` int(11) UNSIGNED NOT NULL,";
-        $query .= "`display_name` VARCHAR(255) NOT NULL,";
+	$query .= "`display_name` VARCHAR(255) NOT NULL,";
+	$query .= "`aspects` TEXT,";
         $query .= "`login` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,";
         $query .= "`last_post` TIMESTAMP,";
         $query .= "`logout` TIMESTAMP,";
@@ -85,8 +88,8 @@ class Burlesque_Room_Queries
     public function add_room()
     {
         $query =  "INSERT IGNORE INTO `".$this->prefix."rooms` ";
-        $query .= "(room, color, font, allow_alias, is_public, description) ";
-        $query .= "VALUES (:room, :color, :font, :allow_alias, :is_public, :description);";
+        $query .= "(room, color, font, allow_alias, is_public, description, aspects) ";
+        $query .= "VALUES (:room, :color, :font, :allow_alias, :is_public, :description, :aspects);";
         return $query;
     }
     
@@ -98,7 +101,8 @@ class Burlesque_Room_Queries
         $query .= "font = :font, ";
         $query .= "allow_alias = :allow_alias, ";
         $query .= "is_public = :is_public, ";
-        $query .= "description = :description ";
+	$query .= "description = :description, ";
+	$query .= "aspects = :aspects ";
         $query .= "WHERE id = :id;";
         return $query;
     }
@@ -130,7 +134,7 @@ class Burlesque_Room_Queries
     
     public function get_room()
     {
-        $query =  "SELECT id, room, color, font, allow_alias, is_public, description ";
+        $query =  "SELECT id, room, color, font, allow_alias, is_public, description, aspects";
         $query .= "FROM `".$this->prefix."rooms` WHERE id = :id;";
         return $query;
     }
@@ -148,8 +152,8 @@ class Burlesque_User_Queries
     public function add_user()
     {
         $query =  "INSERT IGNORE INTO `".$this->prefix."users`";
-        $query .="(forum_id, forum_name, room_id, display_name)";
-        $query .="VALUES(:forum_id, :forum_name, :room_id, :display_name);";
+        $query .="(forum_id, forum_name, room_id, display_name, aspects)";
+        $query .="VALUES(:forum_id, :forum_name, :room_id, :display_name, :aspects);";
         return $query;
     }
     
@@ -167,7 +171,8 @@ class Burlesque_User_Queries
         //$query .= "display_name = :display_name, ";
         $query .= "login = :login, ";
         $query .= "last_post = :last_post, ";
-        $query .= "logout = :logout ";
+	$query .= "logout = :logout, ";
+	$query .= "aspects = :aspects ";
         $query .= "WHERE id = :id; ";
         return $query;
     }
@@ -176,14 +181,21 @@ class Burlesque_User_Queries
     {
         $query =  "UPDATE `".$this->prefix."users` ";
         $query .= "SET ";
-        $query .= "display_name = :display_name, ";
+        $query .= "display_name = :display_name ";
         $query .= "WHERE id = :id; ";
         return $query;
+    }
+
+    public function update_user_aspects()
+    {
+	$query =  "UPDATE `".$this->prefix."users1` ";
+	$query .= "SET aspects = :aspects ";
+	$query .= "WHERE is = :id; ";
     }
     
     public function get_user()
     {
-        $query = "SELECT id, forum_id, forum_name, room_id, display_name, login, last_post, logout ";
+        $query = "SELECT id, forum_id, forum_name, room_id, display_name, login, last_post, logout, aspects ";
         $query .= "FROM `".$this->prefix."users` ";
         $query .= "WHERE room_id = :room_id and display_name = :display_name";
         
@@ -192,7 +204,7 @@ class Burlesque_User_Queries
     
     public function get_user_by_id()
     {
-        $query = "SELECT id, forum_id, forum_name, room_id, display_name, login, last_post, logout ";
+        $query = "SELECT id, forum_id, forum_name, room_id, display_name, login, last_post, logout, aspects ";
         $query .= "FROM `".$this->prefix."users` ";
         $query .= "WHERE id = :user_id;";
         
@@ -201,7 +213,7 @@ class Burlesque_User_Queries
     
     public function get_user_list()
     {
-        $query = "SELECT id, forum_id, forum_name, room_id, display_name, login, last_post, logout ";
+        $query = "SELECT id, forum_id, forum_name, room_id, display_name, login, last_post, logout, aspects ";
         $query .= "FROM `".$this->prefix."users` ";
         $query .= "WHERE room_id = :room_id";
         
@@ -223,18 +235,20 @@ class Burlesque_Post_Queries
         $query .= "(room_id, prefix, prefix_color,";
         $query .= "sender_id, sender_name,";
         $query .= "target_id, target_name,";
-        $query .= "color, font, message, raw)";
+	$query .= "color, font, aspects, ";
+	$query .= "message, raw)";
         $query .= "VALUES(:room_id, :prefix, :prefix_color,";
         $query .= ":sender_id, :sender_name,";
         $query .= ":target_id, :target_name,";
-        $query .= ":color, :font, :message, :raw);";
+	$query .= ":color, :font, aspects, ";
+	$query .= ":message, :raw);";
         return $query;
     }
     
     public function get_posts($placeholders=false)
     {
         $query =  "SELECT id, prefix, prefix_color, sender_id, sender_name,";
-        $query .= "target_id, target_name, color, font, message, timestamp ";
+        $query .= "target_id, target_name, color, font, aspects, message, timestamp ";
         $query .= "FROM `".$this->prefix."posts` WHERE room_id = :room_id ";
         if($placeholders)
             $query .= "AND sender_id NOT IN ($placeholders) ";
