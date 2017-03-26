@@ -67,7 +67,7 @@ function Burlesque_Commands($post)
             $post->prefix_color     = "#804000";
             $post->message          = die_roller(trim(strtok("\n")));
             break;
-        case "fate": // /fate optional_message
+        case "fate": // /fate {message}
             $post->prefix_color     = "#800040";
             $post->message          = strtok("\n") . fate_roller();
             break;

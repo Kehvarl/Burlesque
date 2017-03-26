@@ -11,7 +11,8 @@ class Burlesque_Setup_Queries
     
     public function create_rooms()
     {
-        $query =  "CREATE TABLE IF NOT EXISTS `".$this->prefix."rooms`(";        $query .= "`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,";
+        $query =  "CREATE TABLE IF NOT EXISTS `".$this->prefix."rooms`(";
+        $query .= "`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,";
         $query .= "`room` varchar(64) NOT NULL UNIQUE,";
         $query .= "`color` varchar(32) NOT NULL,";
         $query .= "`font` varchar(64) NOT NULL,";
