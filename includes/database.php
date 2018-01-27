@@ -19,8 +19,8 @@ class Burlesque_Setup_Queries
         $query .= "`allow_alias` boolean NOT NULL DEFAULT 0,";
         $query .= "`is_public` boolean NOT NULL DEFAULT 1,";
         $query .= "`description` texti,";
-	$query .= "`aspects`text";
-	$query .= ") COMMENT='Burlesque Chat Rooms';";
+        $query .= "`aspects`text";
+        $query .= ") COMMENT='Burlesque Chat Rooms';";
         return $query;
     }
     
@@ -39,8 +39,8 @@ class Burlesque_Setup_Queries
         $query .= "`target_name` varchar(255) NOT NULL,";
         $query .= "`color` varchar(32) NOT NULL,";
         $query .= "`font` varchar(64) NOT NULL,";
-	$query .= "`message` TEXT,";
-	$query .= "`aspects` TEXT";
+        $query .= "`message` TEXT,";
+        $query .= "`aspects` TEXT";
         $query .= "`raw` TEXT,";
         $query .= "`timestamp` TIMESTAMP DEFAULT CURRENT_TIMESTAMP";
         $query .= ") COMMENT='Burlesque Chat Posts';";
@@ -54,8 +54,8 @@ class Burlesque_Setup_Queries
         $query .= "`forum_id` int(11) UNSIGNED NOT NULL,";
         $query .= "`forum_name` VARCHAR(255) NOT NULL,";
         $query .= "`room_id` int(11) UNSIGNED NOT NULL,";
-	$query .= "`display_name` VARCHAR(255) NOT NULL,";
-	$query .= "`aspects` TEXT,";
+        $query .= "`display_name` VARCHAR(255) NOT NULL,";
+        $query .= "`aspects` TEXT,";
         $query .= "`login` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,";
         $query .= "`last_post` TIMESTAMP,";
         $query .= "`logout` TIMESTAMP,";
@@ -101,8 +101,8 @@ class Burlesque_Room_Queries
         $query .= "font = :font, ";
         $query .= "allow_alias = :allow_alias, ";
         $query .= "is_public = :is_public, ";
-	$query .= "description = :description, ";
-	$query .= "aspects = :aspects ";
+        $query .= "description = :description, ";
+        $query .= "aspects = :aspects ";
         $query .= "WHERE id = :id;";
         return $query;
     }
@@ -171,8 +171,8 @@ class Burlesque_User_Queries
         //$query .= "display_name = :display_name, ";
         $query .= "login = :login, ";
         $query .= "last_post = :last_post, ";
-	$query .= "logout = :logout, ";
-	$query .= "aspects = :aspects ";
+        $query .= "logout = :logout, ";
+        $query .= "aspects = :aspects ";
         $query .= "WHERE id = :id; ";
         return $query;
     }
@@ -235,13 +235,13 @@ class Burlesque_Post_Queries
         $query .= "(room_id, prefix, prefix_color,";
         $query .= "sender_id, sender_name,";
         $query .= "target_id, target_name,";
-	$query .= "color, font, aspects, ";
-	$query .= "message, raw)";
+        $query .= "color, font, aspects, ";
+        $query .= "message, raw)";
         $query .= "VALUES(:room_id, :prefix, :prefix_color,";
         $query .= ":sender_id, :sender_name,";
         $query .= ":target_id, :target_name,";
-	$query .= ":color, :font, aspects, ";
-	$query .= ":message, :raw);";
+        $query .= ":color, :font, :aspects, ";
+        $query .= ":message, :raw);";
         return $query;
     }
     
@@ -306,48 +306,55 @@ class Burlesque_Color_Queries
     }
 }
 
+/**
+ * Connect to Burlesque database and perform all needed operations.
+ * This class handles all database transactions for Burlesque, including
+ * table creation, adds, updates, deletes, and selects.
+ */
 class Burlesque_DB_Tools
 {
-    private $database;
-    private $host;
-    private $port;
-    private $username;
-    private $password;
-    private $table_prefix;
-    
+    private $table_prefix;    
     private $pdo;
     
     public $error = false;
     
+    /**
+     * @param string $username the name to use when connecting to the database
+     * @param string $password the password to connect to the chat database
+     * @param string $database the name of the database to use (default: burlesque)
+     * @param string $table_prefix a prefix to apply to each table's name (default: none)
+     * @param string $host the hostname or IP of the database server (default: localhost)
+     * @param string $post the port number to use to connect to mysql (default: 3306)
+     *
+     * @return boolean
+     */
     public function __construct($username, $password, $database="burlesque",
-                                $host="localhost", $port = "3306", $table_prefix = "")
+                                $table_prefix = "", $host="localhost",
+                                $port = "3306")
     {
-        $this->username = $username;
-        $this->password = $password;
-        $this->database = $database;
-        $this->host = $host;
-        $this->port = $port;
-        $this->init();
+        try
+        {
+            $this->pdo = new PDO(
+                                 'mysql:host='.$host.';port='.$port.';dbname='.$database,
+                                 $username,
+                                 $password);
+            $this->pdo->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING );
+        }
+        catch(PDOException $e)
+        {
+            $this->error += $e->getMessage();
+            return false;
+        }
+        return true;
     }
     
-    public function init()
-    {
-        try{
-       $this->pdo = new PDO(
-                   'mysql:host='.$this->host.';port='.$this->port.';dbname='.$this->database,
-                   $this->username,
-                   $this->password
-               );
-       $this->pdo->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING );
-       }
-       catch(PDOException $e)
-       {
-           $this->error += $e->getMessage();
-           return false;
-       }
-       return true;
-    }
-    
+    /**
+     * Attempt to exectute a query, capture any errors to an internal log.
+     *
+     * @param PDOStatement $query the query to execute (must be a PDO prepared statement)
+     * @param string $label A label for this query used in any error reporting
+     * @param array|boolean $bind A key/value array of additional parameters to bind to the query
+     */
     private function execute($query, $label, $bind = false)
     {
         if($bind)
@@ -361,6 +368,9 @@ class Burlesque_DB_Tools
         }
     }
     
+    /**
+     * Create all tables needed by Burlesque.
+     */
     public function setup()
     {
         $queries = new Burlesque_Setup_Queries($this->table_prefix);
