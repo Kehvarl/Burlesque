@@ -1,20 +1,23 @@
 <?php
 	require_once($_SERVER['DOCUMENT_ROOT'].'/../config/Burlesque_Config.php');
 	require_once('includes/xf_integrations.php');
-	require_once('includes/classes.php');	
-	require_once('includes/database.php');
-		
+	require_once('includes/classes/Burlesque_Color.php');
+	require_once('includes/classes/Burlesque_Post.php');
+	require_once('includes/classes/Burlesque_Room.php');
+	require_once('includes/classes/Burlesque_User.php');
+	require_once('includes/db/Burlesque_Database_Tools.php');
+
 	$visitor = initialize();
 
 	$session = XenForo_Session::startPublicSession();
-	
+
 	$input_data = json_decode(file_get_contents("php://input"));
-	
-	$dt = new DateTime("now", new DateTimeZone($visitor->get('timezone'))); 
-		
+
+	$dt = new DateTime("now", new DateTimeZone($visitor->get('timezone')));
+
 	$timestamp = time();
 	$dt->setTimestamp($timestamp);
-	
+
 	$db = new Burlesque_DB_Tools($config['db']['username'],
 								 $config['db']['password'],
 								 $config['db']['database'],
@@ -25,10 +28,10 @@
 	{
 		error_log($db->error);
 	}
-       
+
     if(!$visitor->hasAdminPermission('node'))
             $input_data->action = "error";
-    
+
     $return = array();
     switch($input_data->action)
     {
@@ -76,14 +79,14 @@
             $return['users'] = getUsers($db, $input_data->room->id);
             break;
         default:
-            $return['errors'] = "Input Validation Error"; 
+            $return['errors'] = "Input Validation Error";
     }
     if($db->error)
         $return['error'] = $db->error;
 
-    header('Content-Type','application/json; charset=UTF-8');  
+    header('Content-Type','application/json; charset=UTF-8');
     echo json_encode($return);
-    
+
     function getAllRooms($db)
     {
         $rooms_list = array();
@@ -95,7 +98,7 @@
         }
         return $rooms_list;
     }
-    
+
     function getColors($db)
     {
         $color_list = array();
@@ -106,7 +109,7 @@
         }
         return $color_list;
     }
-    
+
     function getUsers($db, $room_id)
     {
         $users_list = array();
@@ -117,7 +120,7 @@
         }
         return $users_list;
     }
-    
+
     function editMultipleColors($db, $colors)
     {
         foreach($colors as $_color)
