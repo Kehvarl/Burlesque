@@ -11,8 +11,6 @@ require_once('includes/Burlesque_Commands.php');
 
 class Burlesque
 {
-    private $Visitor;
-    private $Session;
     private $InputData;
 
     private $Database;
@@ -25,12 +23,11 @@ class Burlesque
     function __construct($config, $input_data)
     {
         //Connect to Xenforo
-        $this->Visitor = initialize($_SERVER['DOCUMENT_ROOT']);
-        $this->Session = XenForo_Session::startPublicSession();
+				$this->XF = new Burlesque_Xenforo_Integration($_SERVER['DOCUMENT_ROOT']);
 
         //Setup Datetime module
         $this->DT = new DateTime("now",
-            new DateTimeZone($this->Visitor->get('timezone')));
+            new DateTimeZone($this->XF->getVisitorTimezone());
         $timestamp = time();
         $this->DT->setTimestamp($timestamp);
 
@@ -91,7 +88,7 @@ class Burlesque
     {
         $rooms_list = array();
         $rooms = $this->Database->get_room_list(
-                                    $this->Visitor->get('user_id'));
+                                    $this->XF->getUserId());
         foreach($rooms as $_room)
         {
             $rooms_list[] = Room::fromDBResult($_room)->toArray();
@@ -120,7 +117,7 @@ class Burlesque
         //Get user login details (room, desired name, forum info, etc)
         $room = $this->getRoom($this->InputData->data->room_id);
         $display_name   = $this->InputData->data->display_name;
-        $forum_name     = $this->Visitor->get('username');
+        $forum_name     = $this->getUserName();
         if(!$room->allow_alias)
         {
             $display_name = $forum_name;
@@ -134,7 +131,7 @@ class Burlesque
             //User not in DB.  Create new for current room
             $user = new User();
             $user->display_name     = $display_name;
-            $user->forum_id         = $this->Visitor->get('user_id');
+            $user->forum_id         = $this->XF->getUserId();
             $user->forum_name       = $forum_name;
             $user->room_id          = $room->id;
             $user->id               = $this->Database->add_user($user,
@@ -154,13 +151,13 @@ class Burlesque
         }
 
         //Store user details in session
-        $this->Session->set('room'.$room->id.'user'.$user->id, array(
+        $this->XF->Session->set('room'.$room->id.'user'.$user->id, array(
                 'color'=> $this->InputData->data->color,
                 'font' => $this->InputData->data->font,
                 'name' => $user->display_name,
                 'id'   => $user->id
         ));
-        $this->Session->save();
+        $this->XF->Session->save();
 
         //Login Post
         $this->doPost("Login", "#33xx33", false);
