@@ -1,20 +1,23 @@
 <?php
 	require_once($_SERVER['DOCUMENT_ROOT'].'/../config/Burlesque_Config.php');
 	require_once('includes/xf_integrations.php');
-	require_once('includes/classes.php');	
-	require_once('includes/database.php');
-		
+	require_once('includes/classes/Burlesque_Color.php');
+	require_once('includes/classes/Burlesque_Post.php');
+	require_once('includes/classes/Burlesque_Room.php');
+	require_once('includes/classes/Burlesque_User.php');
+	require_once('includes/db/Burlesque_Database_Tools.php');
+
 	$visitor = initialize();
 
 	$session = XenForo_Session::startPublicSession();
-	
+
 	$input_data = json_decode(file_get_contents("php://input"));
-	
-	$dt = new DateTime("now", new DateTimeZone($visitor->get('timezone'))); 
-		
+
+	$dt = new DateTime("now", new DateTimeZone($visitor->get('timezone')));
+
 	$timestamp = time();
 	$dt->setTimestamp($timestamp);
-	
+
 	$db = new Burlesque_DB_Tools($config['db']['username'],
 								 $config['db']['password'],
 								 $config['db']['database'],
