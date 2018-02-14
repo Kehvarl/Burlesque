@@ -28,6 +28,8 @@
   class Burlesque_Xenforo_Integration
   {
 
+    public $Session;
+
     /**
     * Open Xenforo Connection
     * @param  string  fileDir     Path to Xenforo installation
@@ -45,6 +47,7 @@
       $dependencies->preLoadData();
 
       XenForo_Session::startPublicSession();
+      $this->Session = XenForo_Application::get('session');
     }
 
     public function getVisitor()
@@ -52,9 +55,9 @@
       return XenForo_Visitor::getInstance();
     }
 
-    public function getSession()
+    public function getUserName()
     {
-      return XenForo_Application::get('session');
+      return $this->getVisitor()->getUserName();
     }
 
     public function getUserId()
@@ -80,6 +83,11 @@
         $userId = $this->getVisitor()->getUserId();
       }
       return Xenforo_Model::create('XenForo_Model_User')->getFullUserById($userId);
+    }
+
+    public function getVisitorTimezone()
+    {
+      return $this->getVisitor()->get('timezone');
     }
 
     function can_view($v)
