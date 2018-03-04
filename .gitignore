@@ -216,7 +216,7 @@ pip-log.txt
 .mr.developer.cfg
 
 
-config/
+config/*.php
 
 *.komodoproject.*
 
