@@ -14,7 +14,11 @@
                         </div>
                     @endif
 
-                    You are logged in!
+                    <div class="title m-b-md">
+                        Welcome {{ $details->name}} ! <br>
+                            Your email is : {{ $details->email }} <br>
+                            Your are {{ $details->user['gender'] }}.
+                    </div>
                 </div>
             </div>
         </div>
