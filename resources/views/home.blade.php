@@ -21,7 +21,6 @@
                     <div class="title m-b-md">
                         Welcome {{ $details->name}} ! <br>
                         Your email is : {{ $details->email }} <br>
-                        <a href="{{ route('manage_user') }}">Edit User</a>
                     </div>
 
                 </div>

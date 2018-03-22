@@ -30,6 +30,10 @@
                                 <button type="submit" class="btn btn-primary">
                                     {{ __('Update') }}
                                 </button>
+
+                                <a class="btn btn-danger offset-md-5" href="{{ route('home') }}">
+                                  Cancel
+                                </a>
                             </div>
                         </div>
                     </form>
