@@ -23,3 +23,5 @@ Route::get('/login/{provider_name}/callback', 'Auth\LoginController@handleProvid
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
+Route::get('/manage', 'Auth\UserController@manage')->name('manage_user');
+Route::post('/manage', 'Auth\UserController@update')->name('update_user');
