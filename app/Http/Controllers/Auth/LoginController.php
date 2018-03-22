@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 use Socialite;
+use App\SocialProfile;
+use App\Provider;
+use App\User;
 
 class LoginController extends Controller
 {
@@ -39,14 +42,53 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-    public function redirectToProvider()
+    public function redirectToProvider($provider_name='google')
     {
-      return Socialite::driver('google')->scopes(['profile','email'])->redirect();
+      return Socialite::driver($provider_name)->redirect();
     }
 
-    public function handleProviderCallback()
+    public function handleProviderCallback($provider_name='google')
     {
-      $user = Socialite::with('google')->scopes(['profile','email'])->user();
-      return view ( 'home' )->withDetails ( $user );
+      $social = Socialite::with($provider_name)->user();
+
+      // Check for an existing account for this social media provider
+      $social_profile = SocialProfile::where('uid', $social->id)->first();
+
+
+      if($social_profile)
+      {
+        $user = User::find($social_profile->user_id);
+      }
+      else
+      {
+        // If account doesn't already exist, check for another account with
+        // the same email.
+        $user = User::where('email', $social->email)->first();
+      }
+
+      if(! $user)
+      {
+        $user = new User;
+        $user->name = $social->name;
+        $user->email = $social->email;
+        $user->password = bcrypt(substr($social->token, 0, 10));
+        $user->save();
+      }
+
+      $social_profile = SocialProfile::firstOrCreate([
+        'user_id' => $user->id,
+        'provider_id' => Provider::where('name', $provider_name)->first()->id,
+        'uid' => $social->id,
+      ]);
+
+      auth()->login($user);
+
+      return redirect('home');
+    }
+
+    public function logout()
+    {
+      auth()->logout();
+      return redirect('/');
     }
 }

@@ -13,10 +13,13 @@
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('welcome');
 
 //Auth::routes();
-Route::get('login', 'Auth\LoginController@redirectToProvider')->name('login');
-Route::get('login/callback', 'Auth\LoginController@handleProviderCallback');
+Route::get('/login', function(){return redirect('/login/google');})->name('login');
+Route::get('/login/{provider_name}', 'Auth\LoginController@redirectToProvider');
+Route::get('/login/{provider_name}/callback', 'Auth\LoginController@handleProviderCallback');
 
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
+Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
