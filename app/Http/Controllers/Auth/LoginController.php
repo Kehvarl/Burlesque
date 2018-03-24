@@ -9,6 +9,7 @@ use Socialite;
 use App\SocialProfile;
 use App\Provider;
 use App\User;
+use App\Role;
 
 class LoginController extends Controller
 {
@@ -73,6 +74,13 @@ class LoginController extends Controller
         $user->email = $social->email;
         $user->password = bcrypt(substr($social->token, 0, 10));
         $user->save();
+
+        $user->roles()->attach(Role::where('name', 'user')->first());
+
+        if($user->id == 1)
+        {
+            $user->roles()->attach(Role::where('name', 'admin')->first());
+        }
       }
 
       $social_profile = SocialProfile::firstOrCreate([

@@ -19,8 +19,9 @@
                     @endif
 
                     <div class="title m-b-md">
-                        Welcome {{ $details->name}} ! <br>
-                        Your email is : {{ $details->email }} <br>
+                        Welcome {{ $user->name}} ! <br>
+                        You are {{ $user->roles->first()->description }}. <br>
+                        Your email is : {{ $user->email }} <br>
                     </div>
 
                 </div>
