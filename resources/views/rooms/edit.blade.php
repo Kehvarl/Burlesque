@@ -35,6 +35,14 @@
                   			</div>
 
                         <div class="form-group">
+                          <label class="form-control">
+                            <input type="checkbox" name="is_ooc" value=1
+                                {{ $room->is_ooc ? 'checked' : '' }}>
+                            OOC Room
+                          </label>
+                        </div>
+
+                        <div class="form-group">
                           <button type="submit" class="btn btn-primary">Update Room</button>
                         </div>
                       </form>

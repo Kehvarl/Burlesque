@@ -34,6 +34,13 @@
                         </div>
 
                         <div class="form-group">
+                          <label class="form-control">
+                            <input type="checkbox" name="is_ooc" value=1>
+                            OOC Room
+                          </label>
+                        </div>
+
+                        <div class="form-group">
                           <button type="submit" class="btn btn-primary">Create Room</button>
                           <a href="{{url()->previous()}}" class="btn btn-default">Cancel</a>
                         </div>

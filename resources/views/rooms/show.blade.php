@@ -35,9 +35,16 @@
                 <div class="card-body">
 
                   <p class="card-title"><strong>{{ $room->name }}</strong>: {{ $room->description }}</p>
+                  <p> <strong>OOC Status:</strong>
+                     {{ $room->is_ooc ? 'Preferred Names Only.'
+                                      : 'Character Names Allowed.'}}
+                  </p>
 
-                  <p class="card-text"> Font: {{ $room->default_font}}
-                  <br> Color: {{ $room->default_color}}</p>
+                  <p class="card-text">
+                    <strong>Font:</strong> {{ $room->default_font}}
+                    <br>
+                    <strong>Color:</strong> {{ $room->default_color}}
+                  </p>
 
                   <h5 class="card-title"> Example: </h5>
                   <div style="font-family:'{{ $room->default_font }}', sans-serif; color: {{ $room->default_color }};">

@@ -89,7 +89,13 @@ class RoomsController extends Controller
      */
     public function update(Request $request, Room $room)
     {
-        $room->update($request->only('name', 'description', 'default_font', 'default_color'));
+        $room->name = $request->input('name');
+        $room->description = $request->input('description');
+        $room->default_font = $request->input('default_font');
+        $room->default_color = $request->input('default_color');
+        $room->is_ooc = $request->has('is_ooc');
+        $room->update();
+
         return Redirect::to('rooms');
     }
 
