@@ -25,7 +25,10 @@ class RoomsController extends Controller
      */
     public function index(Request $request)
     {
-        $request->user()->authorizeRoles(['admin']);
+        if (!$request->user()->authorizeRoles(['admin']))
+        {
+          return redirect('/home')->withErrors(['You are not authorized to manage rooms.']);
+        }
         return view('rooms/index')->with('rooms', Room::orderBy('name')->get());
     }
 

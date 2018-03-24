@@ -45,12 +45,10 @@ class User extends Authenticatable
     {
         if (is_array($roles))
         {
-          return $this->hasAnyRole($roles) ||
-            abort(401, 'You are not authorized to perform this action');
+          return $this->hasAnyRole($roles);
         }
 
-        return $this->hasRole($roles) ||
-          abort(401, 'You are not authorized to perform this action');
+        return $this->hasRole($roles);
     }
 
     /**

@@ -8,24 +8,18 @@
                 <div class="card-header">Dashboard</div>
 
                 <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success">
-                            {{ session('status') }}
-                        </div>
-                    @else
-                    <div class="alert alert-success">
-                        No session.
-                    </div>
-                    @endif
-
                     <div class="title m-b-md">
                         Welcome {{ $user->name}} ! <br>
-                        You are {{ $user->roles->first()->description }}. <br>
+                        You are {{ $user->roles->sortBy('priority')->first()->description }}. <br>
                         Your email is : {{ $user->email }} <br>
                     </div>
 
                 </div>
             </div>
+
+            @if($errors->any())
+              @include('layouts/errors')
+            @endif
         </div>
     </div>
 </div>

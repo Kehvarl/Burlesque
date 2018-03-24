@@ -5,7 +5,11 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">Create New Room</div>
+                <div class="card-header">
+                  <a href="{{ route('home') }}">Dashboard</a> >
+                  <a href="{{ route('rooms.index') }}">Room Management</a> >
+                  Create New Room
+                </div>
 
                 <div class="card-body">
 
