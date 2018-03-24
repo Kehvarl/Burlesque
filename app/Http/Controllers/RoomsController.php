@@ -89,7 +89,7 @@ class RoomsController extends Controller
      */
     public function update(Request $request, Room $room)
     {
-        $room->update($request->only('name', 'description'));
+        $room->update($request->only('name', 'description', 'default_font', 'default_color'));
         return Redirect::to('rooms');
     }
 

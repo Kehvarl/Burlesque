@@ -19,19 +19,19 @@
                         {{ method_field('PATCH') }}
 
                         <div class="form-group">
-                          <input type="text" name="name" value="{{ $room->name }}" placeholder="Room Name">
+                          <input class="form-control" type="text" name="name" value="{{ $room->name }}" placeholder="Room Name">
                         </div>
 
                         <div class="form-group">
-                          <textarea name="description" cols=50 rows=10 placeholder="Room Description">{{ $room->description }}</textarea>
+                          <textarea class="form-control" name="description" placeholder="Room Description">{{ $room->description }}</textarea>
                         </div>
 
                   			<div class="form-group">
-                  			  <input type="text" name="default_font" value="{{ $room->default_font }}" placeholder="Default Text Font">
+                  			  <input class="form-control" type="text" name="default_font" value="{{ $room->default_font }}" placeholder="Default Text Font">
                   			</div>
 
                   			<div class="form-group">
-                  			  <input type="text" name="default_color" value="{{ $room->default_color }}" placeholder="Default Text Color">
+                  			  <input class="form-control" type="text" name="default_color" value="{{ $room->default_color }}" placeholder="Default Text Color">
                   			</div>
 
                         <div class="form-group">

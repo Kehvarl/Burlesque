@@ -18,7 +18,7 @@
             </div>
 
             @if($errors->any())
-              @include('layouts/errors')
+              @include('components/errors')
             @endif
         </div>
     </div>

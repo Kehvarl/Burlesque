@@ -36,6 +36,7 @@
                         @guest
                             <li><a class="nav-item drobpown">
                               <a id="navbarDropdownLogin" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                <span class="glyphicon glyphicon-log-in"></span>
                                 {{ __('Login') }}
                               </a>
                               <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -64,7 +65,7 @@
                                 </a>
 
                                 <div class="dropdown-menu" aria-labelledby='navbarDropdown'>
-                                    <a class='dropdown-item' href="{{ route('manage_user') }}">
+                                    <a class='dropdown-item' href="{{ route('edit_user') }}">
                                         {{ __('Manage') }}
                                     </a>
                                     <a class="dropdown-item" href="{{ route('logout') }}"

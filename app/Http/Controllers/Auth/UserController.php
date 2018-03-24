@@ -28,15 +28,15 @@ class UserController extends Controller
 
     }
 
-    public function manage()
+    public function edit()
     {
-      return view('auth/manage')->with('user', auth()->user());
+      return view('user/edit')->with('user', auth()->user());
     }
 
     public function update()
     {
       $user = auth()->user();
-    
+
       $user->name = request('name');
       $user->update();
 

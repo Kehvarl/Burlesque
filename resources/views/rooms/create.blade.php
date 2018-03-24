@@ -18,19 +18,19 @@
                         {{ csrf_field() }}
 
                         <div class="form-group">
-                          <input type="text" name="name" placeholder="Room Name">
+                          <input class="form-control" type="text" name="name" placeholder="Room Name">
                         </div>
 
                         <div class="form-group">
-                          <textarea name="description" cols=50 rows=10 placeholder="Room Description"></textarea>
+                          <textarea class="form-control" name="description" cols=50 rows=10 placeholder="Room Description"></textarea>
                         </div>
 
                         <div class="form-group">
-                          <input type="text" name="default_font" placeholder="Default Room Font">
+                          <input class="form-control" type="text" name="default_font" placeholder="Default Room Font">
                         </div>
 
                         <div class="form-group">
-                          <input type="text" name="default_color" placeholder="Default Room Text Color">
+                          <input class="form-control" type="text" name="default_color" placeholder="Default Room Text Color">
                         </div>
 
                         <div class="form-group">
