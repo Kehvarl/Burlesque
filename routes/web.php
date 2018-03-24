@@ -25,3 +25,14 @@ Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
 Route::get('/manage', 'Auth\UserController@manage')->name('manage_user');
 Route::post('/manage', 'Auth\UserController@update')->name('update_user');
+
+
+//Room::routes()
+Route::resource('rooms', 'RoomsController');
+/*
+Route::get('/rooms', 'RoomsController@index')->name('rooms');
+Route::post('/rooms', 'RoomsController@store');
+Route::get('/room/{room_id}', 'RoomsController@show');
+Route::patch('/room/{room_id}', 'RoomsController@update');
+Route::delete('/room/{room_id}', 'RoomsController@destroy');
+*/

@@ -18,7 +18,8 @@ class CreateSocialProfilesTable extends Migration
             $table->integer('user_id')->unsigned();
             $table->integer('provider_id')->unsigned();
             $table->string('uid');
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
 
             $table->unique(['user_id', 'provider_id']);
             $table->unique(['provider_id', 'uid']);
