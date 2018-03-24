@@ -56,6 +56,9 @@
                                     <a class='dropdown-item' href="{{ route('rooms.index') }}">
                                         {{ __('Manage Rooms') }}
                                     </a>
+                                    <a class='dropdown-item' href="{{ route('users.index') }}">
+                                        {{ __('Manage Users') }}
+                                    </a>
                                 </div>
                             </li>
                           @endif
@@ -65,8 +68,8 @@
                                 </a>
 
                                 <div class="dropdown-menu" aria-labelledby='navbarDropdown'>
-                                    <a class='dropdown-item' href="{{ route('edit_user') }}">
-                                        {{ __('Manage') }}
+                                    <a class='dropdown-item' href="{{ route('users.show', array( Auth::user() ) ) }}">
+                                        {{ __('My Profile') }}
                                     </a>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();

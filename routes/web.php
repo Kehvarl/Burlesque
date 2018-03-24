@@ -24,8 +24,10 @@ Route::get('/login/{provider_name}/callback', 'Auth\LoginController@handleProvid
 Route::match(array('GET', 'POST'),'/logout', 'Auth\LoginController@logout')->name('logout');
 
 //User::routes();
-Route::get('/user/edit', 'Auth\UserController@edit')->name('edit_user');
-Route::post('/user', 'Auth\UserController@update')->name('update_user');
+//Route::get('/user/{user_id}/edit', 'Auth\UserController@edit')->name('edit_user');
+//Route::post('/user', 'Auth\UserController@update')->name('update_user');
+Route::patch('users/{user}/roles', 'Auth\UserController@updateRoles')->name('users.roles');
+Route::resource('users', 'Auth\UserController');
 
 //Room::routes()
 Route::resource('rooms', 'RoomsController');

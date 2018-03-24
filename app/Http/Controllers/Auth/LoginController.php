@@ -77,6 +77,7 @@ class LoginController extends Controller
 
         $user->roles()->attach(Role::where('name', 'user')->first());
 
+        //If this is our first user, make them an admin
         if($user->id == 1)
         {
             $user->roles()->attach(Role::where('name', 'admin')->first());

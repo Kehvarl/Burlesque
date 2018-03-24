@@ -16,6 +16,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name', 'email', 'password',
+        'gender', 'biography',
     ];
 
     /**
@@ -67,5 +68,14 @@ class User extends Authenticatable
     public function hasRole($roles)
     {
         return null !== $this->roles()->where('name', $roles)->first();
+    }
+
+    /**
+    * Get all admin users
+    */
+    public function scopeAdmins($query)
+    {
+      return $query->join('role_user', 'users.id', '=', 'role_user.user_id')
+                   ->where('role_user.role_id', 1 );
     }
 }
