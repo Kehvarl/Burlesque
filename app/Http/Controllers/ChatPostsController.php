@@ -52,13 +52,37 @@ class ChatPostsController extends Controller
       $chat_post->user()->associate(auth()->user());
       $chat_post->room()->associate($room);
       $chat_post->display_name = auth()->user()->name;
-      $chat_post->message_font = $room->default_font;
-      $chat_post->message_color = $room->default_color;
+      $chat_post->message_font = $request->get('message_font');
+      $chat_post->message_color = $request->get('message_color');
       $chat_post->raw_message = $request->get('raw');
       $chat_post->message = $request->get('raw');
       $chat_post->save();
 
       return redirect("/chats/$room->id");
+    }
+
+    /**
+     * Enter a room
+     *
+     * @param  Room  $room
+     * @return \Illuminate\Http\Response
+     */
+    public function login(Room $room)
+    {
+      $room->users()->syncWithoutDetaching([auth()->user()->id]);
+      return redirect("/chats/$room->id");
+    }
+
+    /**
+     * Leave the room.
+     *
+     * @param  Room  $room
+     * @return \Illuminate\Http\Response
+     */
+    public function logout(Room $room)
+    {
+      $room->users()->detach([auth()->user()->id]);
+      return redirect("/chats");
     }
 
     /**

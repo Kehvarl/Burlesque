@@ -11,18 +11,22 @@
     <title>{{ config('app.name', 'Burlesque') }}</title>
 
     <!-- Styles -->
+
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <style>
       .username {
          font-weight: bold;
        }
        .message {
-         
+
        }
        .timestamp {
 
        }
     </style>
+
+    @yield('scritps_top')
+
 </head>
 <body>
     <div id="app">
@@ -106,5 +110,6 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
+    @yield('scripts')
 </body>
 </html>
