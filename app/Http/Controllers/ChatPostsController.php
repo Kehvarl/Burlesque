@@ -3,9 +3,23 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Room;
+use App\User;
+use App\ChatPost;
 
 class ChatPostsController extends Controller
 {
+
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -13,7 +27,7 @@ class ChatPostsController extends Controller
      */
     public function index()
     {
-        //
+        return view('chats/index')->with('rooms', Room::orderBy('name')->get());
     }
 
     /**
@@ -23,7 +37,6 @@ class ChatPostsController extends Controller
      */
     public function create()
     {
-        //
     }
 
     /**
@@ -34,18 +47,29 @@ class ChatPostsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+      $room = Room::find($request->get('room'));
+      $chat_post = new ChatPost();
+      $chat_post->user()->associate(auth()->user());
+      $chat_post->room()->associate($room);
+      $chat_post->display_name = auth()->user()->name;
+      $chat_post->message_font = $room->default_font;
+      $chat_post->message_color = $room->default_color;
+      $chat_post->raw_message = $request->get('raw');
+      $chat_post->message = $request->get('raw');
+      $chat_post->save();
+
+      return redirect("/chats/$room->id");
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  Room  $room
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Room $room)
     {
-        //
+        return view('chats/show')->with('room', $room);
     }
 
     /**

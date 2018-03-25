@@ -14,6 +14,11 @@ class Room extends Model
      */
     protected $guarded = [];
 
+    public function users()
+    {
+      return $this->belongsToMany(User::class);
+    }
+
     public function posts()
     {
       return $this->hasMany(ChatPost::class);

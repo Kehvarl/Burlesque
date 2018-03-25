@@ -38,6 +38,11 @@ class User extends Authenticatable
       return $this->belongsToMany(Role::class);
     }
 
+    public function rooms()
+    {
+      return $this->belongsToMany(Room::class);
+    }
+
     /**
     * Check User in required role
     * @param string|array $roles

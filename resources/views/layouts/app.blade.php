@@ -12,6 +12,17 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <style>
+      .username {
+         font-weight: bold;
+       }
+       .message {
+         
+       }
+       .timestamp {
+
+       }
+    </style>
 </head>
 <body>
     <div id="app">
