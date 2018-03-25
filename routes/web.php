@@ -36,3 +36,4 @@ Route::resource('rooms', 'RoomsController');
 Route::get('chats/', 'ChatPostsController@index')->name('chats');
 Route::post('chats/', 'ChatPostsController@store')->name('chats.store');
 Route::get('chats/{room}', 'ChatPostsController@show')->name('chats.show');
+Route::get('chats/logout/{room}', 'ChatPostsController@logout')->name('chats.logout');

@@ -41,6 +41,10 @@
                 <div class="card-header" style="overflow:aut;">
                   <a href="{{ route('home') }}">Dashboard</a> >
                   Chatting in: {{ $room->name }}
+                  <a class='btn btn-default' style="float:right;"
+                      href="{{route('chats.logout', array($room)) }}">
+                      {{ __('Leave Room') }}
+                  </a>
                 </div>
 
                 <div class="card-body container">
