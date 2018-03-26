@@ -17,6 +17,11 @@ class CreateRoomUserTable extends Migration
             $table->increments('id');
             $table->integer('room_id')->unsigned();
             $table->integer('user_id')->unsigned();
+            $table->string('display_name')->nullable();
+            $table->string('message_font')->nullable();
+            $table->string('message_color')->nullable();
+
+            $table->unique(['room_id', 'display_name']);
         });
     }
 

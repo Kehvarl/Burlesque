@@ -40,7 +40,7 @@ class User extends Authenticatable
 
     public function rooms()
     {
-      return $this->belongsToMany(Room::class);
+      return $this->belongsToMany(Room::class)->withPivot('id', 'display_name', 'message_font', 'message_color');
     }
 
     /**

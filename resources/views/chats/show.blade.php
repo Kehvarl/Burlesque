@@ -1,37 +1,5 @@
 @extends('layouts.app')
 
-@section('scritps_top')
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-<script type="text/javascript">
-  $("#chat_submit").click(function(e){
-
-      //e.preventDefault();
-      //serializing form data
-      console.log("posting...");
-      var color = $("#message_color").val();
-      var formData = $("#chat_form").serialize();
-      var ajaxUrl = $("#chat_form").attr('action'); //Getting the url
-
-    $.ajax({
-
-    	url: ajaxUrl,
-    	data : formData,
-    	method : "POST",
-    	success : function(data) {
-    		$(".message").addClass('alert alert-success');
-    		$(".message").html(data.result);
-        $("#message_color").val(color);
-    	},
-    	error : function(data) {
-    		$(".message").addClass('alert alert-danger');
-    		$(".message").html(data.result);
-        $("#message_color").val(color);
-    	}
-    });
-  });
-</script>
-@endsection
-
 @section('content')
 
 <div class="container">
@@ -60,9 +28,14 @@
 
                     <div class="form-group">
                       <input class="form-control" type="text" placeholder="Message" name="raw" autofocus>
-                      <input type="color" value="{{ $room->default_color }}"
+                      <select class="" name="display_name">
+                        @foreach(Auth::user()->rooms()->where(['room_id'=>$room->id])->get() as $display)
+                        <option value="{{ $display->pivot->display_name }}">{{ $display->pivot->display_name }}</option>
+                        @endforeach
+                      </select>
+                      <input type="color" value="{{ Auth::user()->rooms()->where(['room_id'=>$room->id])->first()->pivot->message_color }}"
                             name="message_color" id="message_color"/>
-                      <input type="font" value="{{ $room->default_font }}"
+                      <input type="font" value="{{ Auth::user()->rooms()->where(['room_id'=>$room->id])->first()->pivot->message_font }}"
                             name="message_font" id="message_color"/>
                       <button type="submit" class="btn btn-primary" id="chat_submit">Post</button>
                     </div>

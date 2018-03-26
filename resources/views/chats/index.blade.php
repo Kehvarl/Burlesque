@@ -16,7 +16,7 @@
                       <ul>
                       @foreach($rooms as $room)
                           <li>
-                            <a href="{{route('chats.show', array($room)) }}">{{ $room->name }}</a>
+                            <a href="{{route('chats.loginView', array($room)) }}">{{ $room->name }}</a>
                             <span class="badge {{ $room->users->count()<5 ? 'badge-info' : 'badge-success' }}">
                               {{ $room->users->count() }}
                             </span>

@@ -16,7 +16,7 @@ class Room extends Model
 
     public function users()
     {
-      return $this->belongsToMany(User::class);
+      return $this->belongsToMany(User::class)->withPivot('id', 'display_name', 'message_font', 'message_color');
     }
 
     public function posts()

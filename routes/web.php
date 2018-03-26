@@ -37,3 +37,5 @@ Route::get('chats/', 'ChatPostsController@index')->name('chats');
 Route::post('chats/', 'ChatPostsController@store')->name('chats.store');
 Route::get('chats/{room}', 'ChatPostsController@show')->name('chats.show');
 Route::get('chats/logout/{room}', 'ChatPostsController@logout')->name('chats.logout');
+Route::get('chats/login/{room}', 'ChatPostsController@loginView')->name('chats.loginView');
+Route::post('chats/login/{room}', 'ChatPostsController@loginStore')->name('chats.loginStore');

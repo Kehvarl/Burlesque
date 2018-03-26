@@ -48,15 +48,28 @@ class ChatPostsController extends Controller
     public function store(Request $request)
     {
       $room = Room::find($request->get('room'));
+
+      $display_name = $request->input('display_name', auth()->user()->name);
+      $message_font = $request->input('message_font', $room->default_font);
+      $message_color = $request->input('message_color', $room->default_color);
+
       $chat_post = new ChatPost();
       $chat_post->user()->associate(auth()->user());
       $chat_post->room()->associate($room);
-      $chat_post->display_name = auth()->user()->name;
+      $chat_post->display_name = $request->input('display_name', auth()->user()->name);
       $chat_post->message_font = $request->get('message_font');
       $chat_post->message_color = $request->get('message_color');
       $chat_post->raw_message = $request->get('raw');
       $chat_post->message = $request->get('raw');
       $chat_post->save();
+
+      $pivot = auth()->user()->rooms()->where(['room_id'=>$room->id,
+                                               'display_name' => $display_name])->first();
+
+
+      $room->users()->wherePivot('id', $pivot->pivot->id)->update(['display_name'=> $display_name,
+                                                       'message_font'=> $message_font,
+                                                       'message_color'=> $message_color]);
 
       return redirect("/chats/$room->id");
     }
@@ -67,9 +80,28 @@ class ChatPostsController extends Controller
      * @param  Room  $room
      * @return \Illuminate\Http\Response
      */
-    public function login(Room $room)
+    public function loginView(Room $room)
     {
-      $room->users()->syncWithoutDetaching([auth()->user()->id]);
+      return view('chats/login')->with('room', $room);
+    }
+
+    /**
+     * Enter a room
+     *
+     * @param  Room  $room
+     * @return \Illuminate\Http\Response
+     */
+    public function loginStore(Request $request, Room $room)
+    {
+      $user = auth()->user();
+      $display_name = $request->input('display_name', $user->name);
+      $message_font = $request->input('message_font', $room->default_font);
+      $message_color = $request->input('message_color', $room->default_color);
+
+      $room->users()->save($user, ['display_name'=> $display_name,
+                                   'message_font'=> $message_font,
+                                   'message_color'=> $message_color]);
+
       return redirect("/chats/$room->id");
     }
 
