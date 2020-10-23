@@ -1,8 +1,0 @@
-<?php
-    $config['db']['host']             = "localhost";
-    $config['db']['port']             = "3306";
-    $config['db']['database']         = "burlesque_db_name";
-    $config['db']['username']         = "burlesque_db_user";
-    $config['db']['password']         = "burlesque_db_password";
-    $config['db']['table_prefix']     = "burlesque_table_prefix";
-?>
