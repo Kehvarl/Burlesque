@@ -216,8 +216,4 @@ pip-log.txt
 .mr.developer.cfg
 
 
-config/*.php
-
-*.komodoproject.*
-
-sample_data.txt
+myenv/
