@@ -4,6 +4,7 @@ from django.utils import timezone
 
 # Create your models here.
 
+# A Room holds posts
 class Room (models.Model):
     name = models.TextField()
     description = models.TextField()
@@ -14,6 +15,7 @@ class Room (models.Model):
 # A Post represents a single entry in a chat room.
 class Post(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)
     name = models.TextField()
     text = models.TextField()
     bgcolor = models.TextField()
