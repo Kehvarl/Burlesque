@@ -1,0 +1,12 @@
+<h1>All Chats</h1>
+
+{% for chat in object_list %}
+
+<ul>
+  <li> Title: {{ chat.title }} </li>
+  <li> Description: {{ chat.description }} </li>
+  <li> Allows Roleplaying: {{ chat.roleplay }} </li>
+  <li> Masquerade Room: {{ chat.masquerade }} </li>
+</ul>
+
+{% endfor %}
