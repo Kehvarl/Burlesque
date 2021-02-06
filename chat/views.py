@@ -6,5 +6,5 @@ from .models import Chat
 # Create your views here.
 
 class ChatListView(ListView):
-    model = Book
-    template_name = 'book_list.html'
+    model = Chat
+    template_name = 'chat_list.html'
