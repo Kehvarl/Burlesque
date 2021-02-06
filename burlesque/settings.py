@@ -41,9 +41,10 @@ INSTALLED_APPS = [
     # 3rd Party
     'rest_framework',
 
-    
+
     # Local
     'chat.apps.ChatConfig',
+    'api.apps.ApiConfig',
 ]
 
 MIDDLEWARE = [
