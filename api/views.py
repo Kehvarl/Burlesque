@@ -1,6 +1,6 @@
 from rest_framework import generics
 
-from chat.models import Chat
+from .models import Chat
 from .serializers import ChatSerializer
 
 class ChatAPIView(generics.ListAPIView):
