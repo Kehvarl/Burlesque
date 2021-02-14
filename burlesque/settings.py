@@ -43,7 +43,6 @@ INSTALLED_APPS = [
 
 
     # Local
-    'chat.apps.ChatConfig',
     'api.apps.ApiConfig',
 ]
 
