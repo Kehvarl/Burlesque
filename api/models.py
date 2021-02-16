@@ -10,7 +10,7 @@ class Chat(models.Model):
     updated_ad = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.title
+        return self.name
 
 class Post(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -21,4 +21,4 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"From: {name} in {room} at: {created_at}"
+        return f"From: {self.name} in {self.room} at: {self.created_at}"
