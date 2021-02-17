@@ -1,8 +1,12 @@
 from rest_framework import generics
 
-from .models import Chat
-from .serializers import ChatSerializer
+from .models import Chat, Post
+from .serializers import ChatSerializer, PostSerializer
 
-class ChatAPIView(generics.ListAPIView):
+class ChatList(generics.ListAPIView):
+    queryset = Chat.objects.all()
+    serializer_class = ChatSerializer
+
+class ChatPosts(generics.RetrieveUpdateDestroyAPIView):
     queryset = Chat.objects.all()
     serializer_class = ChatSerializer

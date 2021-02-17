@@ -7,14 +7,14 @@ class Chat(models.Model):
     name = models.CharField(max_length=64)
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_ad = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
 
 class Post(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    room = models.ForeignKey(Chat, on_delete=models.CASCADE)
+    room = models.ForeignKey(Chat, on_delete=models.CASCADE, related_name='posts')
     name = models.CharField(max_length=64)
     content = models.TextField()
     color = models.CharField(max_length=7)
