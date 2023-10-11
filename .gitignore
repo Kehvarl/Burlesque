@@ -1,6 +1,7 @@
 .idea/
 myenv/
 manage.py
+migrations/
 
 *.pyc
 *~
