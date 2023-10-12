@@ -44,11 +44,11 @@ INSTALLED_APPS = [
     # 3rd Party
     'rest_framework',
     'rest_framework.authtoken',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'rest_auth',
-    'rest_auth.registration',
+    # 'allauth',
+    # 'allauth.account',
+    # 'allauth.socialaccount',
+    # 'rest_auth',
+    # 'rest_auth.registration',
 
     # Local
     'api.apps.ApiConfig',
