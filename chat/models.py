@@ -5,15 +5,6 @@ from accounts.models import BurlesqueUser
 
 
 # Extending User Model Using a One-To-One Link
-class Room(models.Model):
-    owner = models.ForeignKey(BurlesqueUser, on_delete=models.CASCADE, related_name="rooms")
-    title = models.CharField(max_length=256)
-    description = models.TextField()
-
-    def __str__(self):
-        return self.title
-
-
 class Name(models.Model):
     user = models.ForeignKey(BurlesqueUser, on_delete=models.CASCADE, related_name="names")
     name = models.CharField(max_length=64)
@@ -22,6 +13,27 @@ class Name(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Room(models.Model):
+    owner = models.ForeignKey(BurlesqueUser, on_delete=models.CASCADE, related_name="rooms")
+    title = models.CharField(max_length=256)
+    description = models.TextField()
+    online = models.ManyToManyField(to=Name, blank=True)
+
+    def get_online_count(self):
+        return self.online.count()
+
+    def join(self, name):
+        self.online.add(name)
+        self.save()
+
+    def leave(self, name):
+        self.online.remove(name)
+        self.save()
+
+    def __str__(self):
+        return f'{self.title} ({self.get_online_count()})'
 
 
 class Post(models.Model):
@@ -33,7 +45,7 @@ class Post(models.Model):
     raw = models.TextField()
     display = models.TextField()
     is_visible = models.BooleanField(default=True)
-    date = models.DateTimeField(auto_now=True)
+    timestamp = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.name.name
+        return f'{self.name.name}: {self.raw} [{self.timestamp}]'
