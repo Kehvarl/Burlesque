@@ -1,8 +1,8 @@
 {% extends "chat/base.html" %}
+{% load static %}
 
 {% block title %}Home{% endblock %}
 {% block head %}
-    {% load static %}
 
     <style>
         #chatLog {
@@ -23,7 +23,7 @@
         <div class="row">
             <div class="col-12 col-md-8">
                 <div class="mb-2">
-                    <label for="chatLog">Room: #{{ room.name }}</label>
+                    <label for="chatLog">Room: #{{ room.title }}</label>
                     <textarea class="form-control" id="chatLog" readonly></textarea>
                 </div>
                 <div class="input-group">
@@ -39,7 +39,7 @@
                 </select>
             </div>
         </div>
-        {{ room.name|json_script:"roomName" }}
+        {{ room.title|json_script:"roomName" }}
     </div>
     <script src="{% static 'room.js' %}"></script>
 {% endblock %}
