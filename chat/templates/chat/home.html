@@ -1,14 +1,15 @@
 {% extends "chat/base.html" %}
+{% load static %}
 
 {% block title %}Home{% endblock %}
 {% block head %}
-    {% load static %}
 
     <style>
         #roomSelect {
             height: 300px;
         }
     </style>
+
 {% endblock %}
 
 {% block content %}
@@ -18,9 +19,9 @@
             <div class="col-12 col-md-8">
                 <div class="mb-2">
                     <label for="roomInput">Enter a room name to connect to it:</label>
-                    <input type="text" class="form-control" id="roomInput" placeholder="Room name">
-                    <small id="roomInputHelp" class="form-text text-muted">If the room doesn't exist yet, it will be
-                        created for you.</small>
+                    <input type="text" class="form-control" id="roomInput" placeholder="Room name"/>
+                        <small id="roomInputHelp" class="form-text text-muted">If the room doesn't exist yet, it will be
+                            created for you.</small>
                 </div>
                 <button type="button" id="roomConnect" class="btn btn-success">Connect</button>
             </div>
