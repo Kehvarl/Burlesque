@@ -1,5 +1,6 @@
 .idea/
 myenv/
+venv/
 manage.py
 migrations/
 
@@ -7,7 +8,6 @@ migrations/
 *~
 /.vscode
 __pycache__
-myvenv
 db.sqlite3
 /static
 .DS_Store
