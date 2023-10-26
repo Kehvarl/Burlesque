@@ -8,7 +8,7 @@ from .models import BurlesqueUser
 class BurlesqueUserAdmin(UserAdmin):
     add_form = BurlesqueUserCreationForm
     form = BurlesqueUserChangeForm
-    model - BurlesqueUser
+    model = BurlesqueUser
     list_display = ['email', 'username']
 
 admin.site.register(BurlesqueUser, BurlesqueUserAdmin)
